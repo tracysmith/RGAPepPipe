@@ -30,12 +30,12 @@ def fastqc():
     if lposition != -1:
         snum = fLine[lposition+7:len(fLine)-1]
     elif lposition == -1:
-        snum = len(lines[1]);
-    numBP = int(snum)
+        snum = len(lines[1]); numBP = int(snum)
     if pair == 'paired':
         !fastqc {RGID}_1.fastq {RGID}_2.fastq -t 6 -o ./fastqc
     elif pair == 'single':
         !fastqc {RGID}_1.fastq
+    return numBP
 
 def trim_galore():
     if pair == 'paired':
@@ -49,19 +49,19 @@ def bwaMEM():
     print("inside mem")
     if pair =='paired':
 	print("inside paired if")
-        !bwa mem -M -t 6 {Reference} {PathtoFastQ}/{RGSM}_1_val_1.fq {PathtoFastQ}/{RGSM}_2_val_2.fq > {RGSM}.sam
+        !/home/peplab/src/bwa-0.7.3a/bwa mem -M -t 6 {Reference} {PathtoFastQ}/{RGID}_1_val_1.fq {PathtoFastQ}/{RGID}_2_val_2.fq > {RGID}.sam
     elif pair == 'single':
-        !bwa mem -M -t 6 {Reference} {PathtoFastQ}/{RGID}_1_trimmed.fq > {RGID}.sam
+        !/home/peplab/src/bwa-0.7.3a/bwa mem -M -t 6 {Reference} {PathtoFastQ}/{RGID}_1_trimmed.fq > {RGID}.sam
 
 #Command to map with BWA (<70 bp)
 def bwa():
     if pair == 'paired':
-        !bwa aln -t 6 {Reference} {PathtoFastQ}/{RGID}_1_val_1.fq > {RGID}_1.sai
-        !bwa aln -t 6 {Reference} {PathtoFastQ}/{RGID}_2_val_2.fq > {RGID}_2.sai
-        !bwa sampe -P {Reference} {RGID}_1.sai {RGID}_2.sai {PathtoFastQ}/{RGID}_1_val_1.fq {PathtoFastQ}/{RGID}_2_val_2.fq > {RGID}.sam
+        !/home/peplab/src/bwa-0.7.3a/bwa aln -t 6 {Reference} {PathtoFastQ}/{RGID}_1_val_1.fq > {RGID}_1.sai
+        !/home/peplab/src/bwa-0.7.3a/bwa aln -t 6 {Reference} {PathtoFastQ}/{RGID}_2_val_2.fq > {RGID}_2.sai
+        !/home/peplab/src/bwa-0.7.3a/bwa sampe -P {Reference} {RGID}_1.sai {RGID}_2.sai {PathtoFastQ}/{RGID}_1_val_1.fq {PathtoFastQ}/{RGID}_2_val_2.fq > {RGID}.sam
     elif pair == 'single':
-        !bwa aln -t 6 {Reference} {PathtoFastQ}/{RGID}_1_trimmed.fq > {RGID}.sai
-        !bwa samse {Reference} {RGID}.sai {PathtoFastQ}/{RGID}_1_trimmed.fq > {RGID}.sam
+        !/home/peplab/src/bwa-0.7.3a/bwa aln -t 6 {Reference} {PathtoFastQ}/{RGID}_1_trimmed.fq > {RGID}.sai
+        !/home/peplab/src/bwa-0.7.3a/bwa samse {Reference} {RGID}.sai {PathtoFastQ}/{RGID}_1_trimmed.fq > {RGID}.sam
 
 #Sort with samtools
 def sort():
@@ -126,7 +126,7 @@ for line in InFile:
         failedF.write(RGID + ' - fastq_dump' + '\n')
     else:
         print('2 files were created')
-        fastqc()
+        numBP = fastqc()
         print("fastqc completed")
         trim_galore()
         print('trim_galore completed')
