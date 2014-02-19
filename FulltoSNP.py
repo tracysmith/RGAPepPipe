@@ -41,7 +41,7 @@ snps = []
 pos = 1
 positions=[]
 for s in seqsTran[:]:
-    if len(set(s))!=1 and s.count('-')< thresh:
+    if len(set(s))!=1 and s.count('-')<= thresh:
 	snps.append(s)
 	positions.append(pos)
     pos=pos+1
@@ -59,7 +59,7 @@ for i in range(len(results)):
 OutFile = open(OutFileName,'w')
 
 #write file header
-OutFile.write("#NEXUS" + "\n" + "Begin DATA;" + "\n\t" + "Dimensions ntax=" + str(len(SeqDict)+1) + " nchar=" + str(len(results[0])) + ";" + "\n\t" + "Format datatype=DNA gap=-;" + "\n\t" + "Matrix" + "\n")
+OutFile.write("#NEXUS" + "\n" + "Begin DATA;" + "\n\t" + "Dimensions ntax=" + str(len(SeqDict)) + " nchar=" + str(len(results[0])) + ";" + "\n\t" + "Format datatype=DNA gap=-;" + "\n\t" + "Matrix" + "\n")
 
 
 
