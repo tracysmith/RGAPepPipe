@@ -4,6 +4,7 @@ import sys
 import re
 import itertools
 import math
+from Bio import SeqIO
 
 #SNP alignment from full Alignment nexus file
 
@@ -18,20 +19,18 @@ OutFileName = sys.argv[2]
 threshold = sys.argv[3]
 PosOutFileName = sys.argv[2]+'positions'
 
-InFile = open(InFileName,'r')
-lines = InFile.readlines()
-InFile.close()
-matrixIndex = lines.index('\tMatrix\n')
+record_dict = SeqIO.to_dict(SeqIO.parse(InFileName,"nexus"))
 
 #seperate speciesnames from sequences
 seqs = []
 titles = []
 
-for i in range(matrixIndex+1,len(lines)-2,2):
-    titles.append(lines[i])
+for key in record_dict:
+    titles.append(key)
+    x = record_dict[key]
+    seqs.append(x.seq)
 
-for i in range(matrixIndex+2,len(lines)-2,2):
-    seqs.append(lines[i])
+
 
 #transpose string lists
 thresh = math.ceil(float(threshold) * len(seqs))
