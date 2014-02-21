@@ -19,7 +19,7 @@ PathtoFastQ = sys.argv[3]
 
 
 def fastq_dump():
-    !/home/peplab/src/sratoolkit.2.2.0-ubuntu32/bin/fastq-dump.2.2.0 --split-files {RGID}.sra
+    !/opt/PepPrograms/RGAPipeline/fastq-dump --split-files {RGID}.sra
 
 def fastqc():
     filename = RGID+ '_1.fastq'
@@ -32,16 +32,16 @@ def fastqc():
     elif lposition == -1:
         snum = len(lines[1]); numBP = int(snum)
     if pair == 'paired':
-        !fastqc {RGID}_1.fastq {RGID}_2.fastq -t 6 -o ./fastqc
+        !/opt/PepPrograms/RGAPipeline/fastqc {RGID}_1.fastq {RGID}_2.fastq -t 6 -o ./fastqc
     elif pair == 'single':
-        !fastqc {RGID}_1.fastq
+        !/opt/PepPrograms/RGAPipeline/fastqc {RGID}_1.fastq
     return numBP
 
 def trim_galore():
     if pair == 'paired':
-        !/home/peplab/src/trim_galore_zip/trim_galore -q 15 --fastqc_args "-t 6 -o ./trimfastqc"  -stringency 7 -o ./trim --paired --retain_unpaired {RGID}_1.fastq {RGID}_2.fastq
+        !/opt/PepPrograms/RGAPipeline/trim_galore -q 15 --fastqc_args "-t 6 -o ./trimfastqc"  -stringency 7 -o ./trim --paired --retain_unpaired {RGID}_1.fastq {RGID}_2.fastq
     elif pair == 'single':
-        !/home/peplab/src/trim_galore_zip/trim_galore -q 15 --fastqc_args "-t 6 -o ./trimfastqc"  -stringency 7 -o ./trim  {RGID}_1.fastq
+        !/opt/PepPrograms/RGAPipeline/trim_galore -q 15 --fastqc_args "-t 6 -o ./trimfastqc"  -stringency 7 -o ./trim  {RGID}_1.fastq
       
 
 #Command to map with BWA (>70 bp)
@@ -49,41 +49,42 @@ def bwaMEM():
     print("inside mem")
     if pair =='paired':
 	print("inside paired if")
-        !/home/peplab/src/bwa-0.7.3a/bwa mem -M -t 6 {Reference} {PathtoFastQ}/{RGID}_1_val_1.fq {PathtoFastQ}/{RGID}_2_val_2.fq > {RGID}.sam
+        !/opt/PepPrograms/RGAPipeline/bwa mem -M -t 6 {Reference} {PathtoFastQ}/{RGID}_1_val_1.fq {PathtoFastQ}/{RGID}_2_val_2.fq > {RGID}.sam
     elif pair == 'single':
-        !/home/peplab/src/bwa-0.7.3a/bwa mem -M -t 6 {Reference} {PathtoFastQ}/{RGID}_1_trimmed.fq > {RGID}.sam
+        !/opt/PepPrograms/RGAPipeline/bwa mem -M -t 6 {Reference} {PathtoFastQ}/{RGID}_1_trimmed.fq > {RGID}.sam
 
 #Command to map with BWA (<70 bp)
 def bwa():
     if pair == 'paired':
-        !/home/peplab/src/bwa-0.7.3a/bwa aln -t 6 {Reference} {PathtoFastQ}/{RGID}_1_val_1.fq > {RGID}_1.sai
-        !/home/peplab/src/bwa-0.7.3a/bwa aln -t 6 {Reference} {PathtoFastQ}/{RGID}_2_val_2.fq > {RGID}_2.sai
-        !/home/peplab/src/bwa-0.7.3a/bwa sampe -P {Reference} {RGID}_1.sai {RGID}_2.sai {PathtoFastQ}/{RGID}_1_val_1.fq {PathtoFastQ}/{RGID}_2_val_2.fq > {RGID}.sam
+        !/opt/PepPrograms/RGAPipeline/bwa aln -t 6 {Reference} {PathtoFastQ}/{RGID}_1_val_1.fq > {RGID}_1.sai
+        !/opt/PepPrograms/RGAPipeline/bwa aln -t 6 {Reference} {PathtoFastQ}/{RGID}_2_val_2.fq > {RGID}_2.sai
+        !/opt/PepPrograms/RGAPipeline/bwa sampe -P {Reference} {RGID}_1.sai {RGID}_2.sai {PathtoFastQ}/{RGID}_1_val_1.fq {PathtoFastQ}/{RGID}_2_val_2.fq > {RGID}.sam
     elif pair == 'single':
-        !/home/peplab/src/bwa-0.7.3a/bwa aln -t 6 {Reference} {PathtoFastQ}/{RGID}_1_trimmed.fq > {RGID}.sai
-        !/home/peplab/src/bwa-0.7.3a/bwa samse {Reference} {RGID}.sai {PathtoFastQ}/{RGID}_1_trimmed.fq > {RGID}.sam
+        !/opt/PepPrograms/RGAPipeline/bwa aln -t 6 {Reference} {PathtoFastQ}/{RGID}_1_trimmed.fq > {RGID}.sai
+        !/opt/PepPrograms/RGAPipeline/bwa samse {Reference} {RGID}.sai {PathtoFastQ}/{RGID}_1_trimmed.fq > {RGID}.sam
 
 #Sort with samtools
 def sort():
-    !samtools view -bhSu {RGID}.sam | samtools sort - {RGID}.sort
+    !/opt/PepPrograms/RGAPipeline/samtools view -bhSu {RGID}.sam | samtools sort - {RGID}.sort
 
 #Command to mark duplicates in your bam file
 def dedup():
-    !picard-tools MarkDuplicates I={RGID}.sort.bam O={RGID}.dedup.bam M={RGID}.metrics REMOVE_DUPLICATES=true AS=true VALIDATION_STRINGENCY=SILENT
+    !java -Xmx2g -jar MarkDuplicates.jar I={RGID}.sort.bam O={RGID}.dedup.bam M={RGID}.metrics REMOVE_DUPLICATES=true AS=true VALIDATION_STRINGENCY=SILENT
 
 #Command to add/replace read groups
 def readgroups():
-    !picard-tools AddOrReplaceReadGroups I={RGID}.dedup.bam O={RGID}.ready.bam RGID={RGID} RGLB={RGLB} RGPL={RGPL} RGPU=dummy-barcode RGSM={RGSM} VALIDATION_STRINGENCY=SILENT SORT_ORDER=coordinate CREATE_INDEX=true
+    !java -Xmx2g -jar AddOrReplaceReadGroups.jar I={RGID}.dedup.bam O={RGID}.ready.bam RGID={RGID} RGLB={RGLB} RGPL={RGPL} RGPU=dummy-barcode RGSM={RGSM} VALIDATION_STRINGENCY=SILENT SORT_ORDER=coordinate CREATE_INDEX=true
 
 #Command to Realign with GATK
 def realign():
-    !java -jar /home/peplab/src/GenomeAnalysisTK-2.3-9-ge5ebf34/GenomeAnalysisTK.jar -I {RGID}.ready.bam -R {Reference} -T RealignerTargetCreator -o {RGID}.intervals 
-    !java -jar /home/peplab/src/GenomeAnalysisTK-2.3-9-ge5ebf34/GenomeAnalysisTK.jar -I {RGID}.ready.bam -R {Reference} -T IndelRealigner -targetIntervals {RGID}.intervals -o {RGID}.realn.bam
+    !java -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -I {RGID}.ready.bam -R {Reference} -T RealignerTargetCreator -o {RGID}.intervals 
+
+    !java -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -I {RGID}.ready.bam -R {Reference} -T IndelRealigner -targetIntervals {RGID}.intervals -o {RGID}.realn.bam
 
 #Command to Create VCF file
 def vcf():
-    !java -jar /home/peplab/src/GenomeAnalysisTK-2.3-9-ge5ebf34/GenomeAnalysisTK.jar -I {RGID}.realn.bam -R {Reference} -T UnifiedGenotyper -o {RGID}.vcf -out_mode EMIT_ALL_CONFIDENT_SITES -stand_call_conf 20 -stand_emit_conf 20 --sample_ploidy 1 -nt 6 -rf BadCigar
-    !java -jar /home/peplab/src/GenomeAnalysisTK-2.3-9-ge5ebf34/GenomeAnalysisTK.jar -I {RGID}.realn.bam -R {Reference} -T DepthOfCoverage -L {RGID}.intervals -U -S SILENT -rf BadCigar
+    !java -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -I {RGID}.realn.bam -R {Reference} -T UnifiedGenotyper -o {RGID}.vcf -out_mode EMIT_ALL_CONFIDENT_SITES -stand_call_conf 20 -stand_emit_conf 20 --sample_ploidy 1 -nt 6 -rf BadCigar
+    !java -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -I {RGID}.realn.bam -R {Reference} -T DepthOfCoverage -L {RGID}.intervals -U -S SILENT -rf BadCigar
 
 #Command to organize folder
 def cleanup():
