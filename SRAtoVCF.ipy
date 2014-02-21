@@ -69,11 +69,11 @@ def sort():
 
 #Command to mark duplicates in your bam file
 def dedup():
-    !java -Xmx2g -jar MarkDuplicates.jar I={RGID}.sort.bam O={RGID}.dedup.bam M={RGID}.metrics REMOVE_DUPLICATES=true AS=true VALIDATION_STRINGENCY=SILENT
+    !java -Xmx2g -jar /opt/PepPrograms/RGAPipeline/MarkDuplicates.jar I={RGID}.sort.bam O={RGID}.dedup.bam M={RGID}.metrics REMOVE_DUPLICATES=true AS=true VALIDATION_STRINGENCY=SILENT
 
 #Command to add/replace read groups
 def readgroups():
-    !java -Xmx2g -jar AddOrReplaceReadGroups.jar I={RGID}.dedup.bam O={RGID}.ready.bam RGID={RGID} RGLB={RGLB} RGPL={RGPL} RGPU=dummy-barcode RGSM={RGSM} VALIDATION_STRINGENCY=SILENT SORT_ORDER=coordinate CREATE_INDEX=true
+    !java -Xmx2g -jar /opt/PepPrograms/RGAPipeline/AddOrReplaceReadGroups.jar I={RGID}.dedup.bam O={RGID}.ready.bam RGID={RGID} RGLB={RGLB} RGPL={RGPL} RGPU=dummy-barcode RGSM={RGSM} VALIDATION_STRINGENCY=SILENT SORT_ORDER=coordinate CREATE_INDEX=true
 
 #Command to Realign with GATK
 def realign():
