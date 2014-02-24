@@ -30,7 +30,8 @@ def fastqc():
     if lposition != -1:
         snum = fLine[lposition+7:len(fLine)-1]
     elif lposition == -1:
-        snum = len(lines[1]); numBP = int(snum)
+        snum = len(lines[1]) 
+    numBP = int(snum)
     if pair == 'paired':
         !/opt/PepPrograms/RGAPipeline/fastqc {RGID}_1.fastq {RGID}_2.fastq -t 6 -o ./fastqc
     elif pair == 'single':
