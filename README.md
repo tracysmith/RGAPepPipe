@@ -32,6 +32,9 @@ GATK (genome analysis toolkit) --> available from broad institute (we use versio
 
 Java must also be installed. 
 
+VCFsToSnpTable.py
+-----------------
 
+blah
 
 
