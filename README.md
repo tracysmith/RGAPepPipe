@@ -35,6 +35,25 @@ Java must also be installed.
 VCFsToSnpTable.py
 -----------------
 
-blah
+This script takes a variable number of input vcf files. Each .vcf file must contain snp information about only one strain. At least one input file must be supplied. The name of an output file must also be supplied, and output is in snp table format. The output contains the combined information about all strains. 
+
+> VCFsToSnpTable.py [input .vcf 1] .... [input.vcf n] [output file]
+
+
+SNPTableToNexus.py
+-----------------
+
+Takes the SnpTable generated in VCFsToSnpTable.py and converts it to a nexus file. Requires a reference genome as well. Output file should end in .nex.   
+
+Usage:  
+
+> SNPTableToNexus.py [input file] [outputfile] [reference sequence .fa file]
+
+FulltoSNP.py
+------------
+Takes the nexus file generated in SNPTableToNexus.py and performs a SNP alignment. Output file should be in .nex format. User must also input a threshold value (between 0 and 1) . The threshold determines the number of sequences with an ambiguous base at a certain position and rejects base position if the percentage of ambiguous bases is greater than the threshold.  
+USAGE:
+
+> FulltoSNP.py [input nexus file] [output file] [threshold value] 
 
 
