@@ -15,7 +15,7 @@ For example:
 
 > ERR07108	ERS088906	ERX048850	illumina	paired
 
-The script must be run from folder with indexed reference genome files in it as well as downloaded .sra files. There must also be a subdirectory called "trimfastqc" as well as a subdirectory titled "trim"
+The script must be run from a folder with indexed reference genome files in it as well as downloaded .sra files. There must also be a subdirectory called "trimfastqc" as well as a subdirectory titled "trim"
 
 When running the script, type:
 > ipython [path to SRAtoVCF.ipy] [path to .txt file] [.fasta reference file] [path to directory named "trim"]
