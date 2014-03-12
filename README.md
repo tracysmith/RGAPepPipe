@@ -8,8 +8,8 @@ File Descriptions
 SRAtoVCF.ipy
 ------------
 This script takes a list of SRA filenames (w/o .sra extension) and outputs a VCFfile for each. For each sample, a tab-delimited .txt file is required containing:
-SRAReadGroupID	SampleGroupID	LibraryID	SeqPlatform	paired/single
-ERR07108	ERS088906	ERX048850	illumina	paired
+> SRAReadGroupID	SampleGroupID	LibraryID	SeqPlatform	paired/single
+> ERR07108	ERS088906	ERX048850	illumina	paired
 
 The script must be run from folder with indexed reference genome files in it as well as downloaded .sra files. There must also be a subdirectory called "trimfastqc" as well as a subdirectory titled "trim"
 
