@@ -56,8 +56,10 @@ USAGE:
 
 > FulltoSNP.py [input nexus file] [output file] [threshold value] 
 
+
 Example
-_______
+--------
+
 
 In the template directory lies all the reference genome files for M.Tb (the H37Rv files). Also included is a text file ERP000132.txt These are two of the three things necessary in order to run SRAtoVCF.ipy. The third file is the SRA file which can be obtained from NCBI using the following command in the command line:
 
