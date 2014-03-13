@@ -1,0 +1,1 @@
+ERR027082	ERS004199	ERX009917	illumina	paired
