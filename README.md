@@ -56,4 +56,28 @@ USAGE:
 
 > FulltoSNP.py [input nexus file] [output file] [threshold value] 
 
+Example
+_______
+
+In the template directory lies all the reference genome files for M.Tb (the H37Rv files). Also included is a text file ERP000132.txt These are two of the three things necessary in order to run SRAtoVCF.ipy. The third file is the SRA file which can be obtained from NCBI using the following command in the command line:
+
+> wget -m ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/ERR/ERR027/ERR027082
+
+This will create a folder of several sub directories in which ERR027082.sra is located. Move the .sra file to working directory. There should also be to folders in the current working directory that you need to make. trim and trimfastqc , Then run the following command to execute SRAtoVCF.ipy:
+
+> ipython SRAtoVCF.ipy ERP000132.txt H37Rv.fasta ./trim
+
+This will create a folder called ERP000132_vcf and within it will be a file ERR027082.vcf. You will use this file to run VCFtoSnpTable.py by running the command:
+
+> python VCFsToSnpTable.py ERR027082.vcf SNPTable.txt
+
+This will create a SNPTable.txt file which you will use to run SNPTableToNexus.py which is run with the following command:
+
+> python SNPTableToNexus.py SNPTable.txt full.nex H37Rv.fasta
+
+This will create full.nex which is the complete confident site nexus file. In order to get the SNP alignment nexus file run:
+
+> python FulltoSNP.py full.nex end.nex .25
+
+If all ran smoothly the end.nex file should match the final.nex file that is included in the template folder. 
 
