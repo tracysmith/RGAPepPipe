@@ -22,7 +22,8 @@ def call_with_log(cmd):
     cmd = cmd.format(**(kvmap))
 
     logfile = open(current_datetime+".log", "a+")
-    print("Executing command: " + cmd + "\n")
+    if options.verbose:
+        print("Executing command: " + cmd + "\n")
     logfile.write("Executing command: " + cmd + "\n")
     logfile.flush()
     ret = subprocess.call(shlex.split(cmd), stdout=logfile, stderr=logfile)
@@ -40,6 +41,8 @@ def call_bwa_with_log(cmd, filename):
     
     bwa_out = open(filename, "w+")
     logfile = open(current_datetime+".log", "a+")
+    if options.verbose:
+        print("Executing command: " + cmd + "\n")
     logfile.write("Executing command: " + cmd + "\n")
     logfile.flush()
     ret = subprocess.call(shlex.split(cmd), stdout=bwa_out, stderr=logfile)
@@ -52,6 +55,8 @@ def call_sort_with_log(cmd, cmd2):
     cmd2 = cmd2.format(**(kvmap))
     
     logfile = open(current_datetime+".log", "a+")
+    if options.verbose:
+        print("Executing command: " + cmd + "\n")
     logfile.write("Executing command: " + cmd + "\n")
     logfile.flush()
     samtools_view = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, stderr=logfile)
@@ -222,7 +227,9 @@ parser = OptionParser(usage="usage: %prog [options] <path to .txt file> <.fasta 
 
 parser.add_option("-p", "--program", dest="start_prog", help="program to start executing at: fastq_dump, fastqc, trim_galore, bwa, sort, dedup, readgroups, realign, vcf, cleanup [default: fastq_dump] (You must have run the pipeline up to the chosen starting program for this option to work)")
 
-parser.set_defaults(start_prog="fastq_dump")
+parser.add_option("-v", "--verbose", dest="verbose", help="Runs program in verbose mode which enables all debug output.")
+
+parser.set_defaults(start_prog="fastq_dump", verbose=False)
 
 (options, args) = parser.parse_args()
 
