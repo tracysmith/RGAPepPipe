@@ -58,6 +58,13 @@ USAGE:
 
 > FulltoSNP.py [input nexus file] [output file] [threshold value] 
 
+enaFileParser.py
+----------------
+This script converts the text file downloaded from the European Nucleotide Archive for a study and converts it into the input file for SRAtoVCF.py and a list of URLs of fastqs to be downloaded from ENA.
+
+Usage:
+
+> enaFileParser.py [input ENA text file]
 
 Example
 --------
