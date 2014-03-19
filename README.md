@@ -5,7 +5,7 @@ Reference Guided Assembly Pepperell Lab Pipeline
 
 File Descriptions
 ==================
-SRAtoVCF.ipy
+SRAtoVCF.py
 ------------
 This script takes a list of SRA filenames (w/o .sra extension) and outputs a VCFfile for each. For each sample, a tab-delimited .txt file is required containing:
 
@@ -18,7 +18,9 @@ For example:
 The script must be run from a folder with downloaded .sra files. There must also be a subdirectory called "trimfastqc" as well as a subdirectory titled "trim". The path to the indexed reference .fa file must also be provided.
 
 When running the script, type:
-> ipython [path to SRAtoVCF.ipy] [path to .txt file] [.fasta reference file] [path to directory named "trim"]
+> python [path to SRAtoVCF.py] [path to .txt file] [.fasta reference file] [path to directory named "trim"]
+
+For other available command line options run "python SRAtoVCF.py -h"
 
 Necessary programs required to run script:
 
