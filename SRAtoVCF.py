@@ -227,15 +227,20 @@ parser = OptionParser(usage="usage: %prog [options] <path to .txt file> <.fasta 
 
 parser.add_option("-p", "--program", dest="start_prog", help="program to start executing at: fastq_dump, fastqc, trim_galore, bwa, sort, dedup, readgroups, realign, vcf, cleanup [default: fastq_dump] (You must have run the pipeline up to the chosen starting program for this option to work)")
 
-parser.add_option("-v", "--verbose", dest="verbose", help="Runs program in verbose mode which enables all debug output.")
+parser.add_option("-v", "--verbose", action="store_true", dest="verbose", help="Runs program in verbose mode which enables all debug output.")
 
-parser.set_defaults(start_prog="fastq_dump", verbose=False)
+parser.add_option("--ena", action="store_true", dest="ena", help="Skips fastq_dump for every file. For read data already in fastq format.")
+
+parser.set_defaults(start_prog="fastq_dump", verbose=False, ena=False)
 
 (options, args) = parser.parse_args()
 
 if(len(args) != 3):
     print("usage: <path to .txt file> <.fasta reference file> <path to directory named 'trim'> [options]")
     sys.exit(-1)
+
+if options.ena:
+    options.start_prog="fastqc"
 
 inFileName = args[0]
 reference = args[1]
@@ -290,8 +295,10 @@ for line in inFile:
     #start the program at the specified program
     
     functiondict[options.start_prog]()
-        
-    options.start_prog = "fastq_dump"
+    if options.ena:
+        options.start_prog="fastqc"
+    else:
+        options.start_prog = "fastq_dump"
             
 
 inFile.close()
