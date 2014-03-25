@@ -22,15 +22,42 @@ When running the script, type:
 
 For other available command line options run "python SRAtoVCF.py -h"
 
-Necessary programs required to run script:
+####Necessary programs required to run script:
 
-fastq-dump --> part of the SRAtoolkit software package available from NCBI (version we use 2.2.0).  
-fastqc --> available from Babraham Bioinformatics, package includes necessary Picard BAM/SAM libraries (Version we use v0.10.1).  
-trim-galore --> available from Babraham Bioinformatics, fastqc is required (we use version 0.2.6).  
-bwa --> available from bio-bwa.sourceforge.net (we use version 0.7.7).  
-SAMtools --> available from samtools.sourceforge.net (we use version 0.1.18).  
-Picard-tools --> available from picard.sourceforge.net (we use version 1.107).  
-GATK (genome analysis toolkit) --> available from broad institute (we use version 2.8.1).  
+fastq-dump
+  * part of the SRAtoolkit software package available from NCBI
+  * we use version 2.2.0
+  * converts SRA format files to fastq  
+
+fastqc
+  * available from Babraham Bioinformatics, package includes necessary Picard BAM/SAM libraries
+  * we use v0.10.1
+  * performs quality checks on read data in fastq files  
+
+trim-galore
+  * available from Babraham Bioinformatics, fastqc and cutadapt are required
+  * we use version 0.2.6 
+  * trims bases below a given quality threshold, removes adapter sequences, and reruns fastqc on trimmed data  
+
+bwa
+  * available from bio-bwa.sourceforge.net
+  * we use version 0.7.7 
+  * maps reads to reference sequence  
+
+SAMtools
+  * available from samtools.sourceforge.net 
+  * we use version 0.1.18  
+  * sorts bam files by coordinates  
+
+Picard-tools
+  * available from picard.sourceforge.net
+  * we use version 1.107
+  * removes duplicates and edits read group information  
+
+GATK (genome analysis toolkit)
+  * available from broad institute
+  * we use version 2.8.1
+  * locally realigns reads and produces VCF  
 
 Java 7 must also be installed. 
 
