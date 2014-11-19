@@ -68,7 +68,7 @@ OutFile.write('\n')
 for key in SeqDict:
     newSeq = "".join(SeqDict[key])
     OutFile.write(key + "\n" + newSeq + "\n")
-OutFile.write(";" + "\n" + "END;")
+OutFile.write(";\nEND;\n")
 
 InFile.close()
 OutFile.close()
