@@ -3,7 +3,7 @@
 import sys
 import re
 import itertools
-
+from os.path import basename
   
 #SNP table from VCFstoSNPTable.py to nexus file 
 
@@ -60,7 +60,8 @@ OutFile.write("#NEXUS" + "\n" + "Begin DATA;" + "\n\t" + "Dimensions ntax=" +
 	+ "\n\t" + "Matrix" + "\n")
 
 #write ref sequence into file
-OutFile.write(Refname + '\n')
+refname = basename(Refname).split(".")[0]
+OutFile.write(refname + '\n')
 OutFile.write("".join(Refseq))
 OutFile.write('\n')
 
