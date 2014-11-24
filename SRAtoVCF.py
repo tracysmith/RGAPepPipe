@@ -223,7 +223,7 @@ def cleanup():
 
 ##for command line argument processing
 	
-parser = OptionParser(usage="usage: %prog [options] <path to .txt file> <.fasta reference file> <path to directory named 'trim'> ")
+parser = OptionParser(usage="usage: %prog [options] <path to .txt file> <.fasta reference file>")
 
 parser.add_option("-p", "--program", dest="start_prog", help="program to start executing at: fastq_dump, fastqc, trim_galore, bwa, sort, dedup, readgroups, realign, vcf, cleanup [default: fastq_dump] (You must have run the pipeline up to the chosen starting program for this option to work)")
 
@@ -235,8 +235,8 @@ parser.set_defaults(start_prog="fastq_dump", verbose=False, ena=False)
 
 (options, args) = parser.parse_args()
 
-if(len(args) != 3):
-    print("usage: <path to .txt file> <.fasta reference file> <path to directory named 'trim'> [options]")
+if(len(args) != 2):
+    print("usage: <path to .txt file> <.fasta reference file> [options]")#<path to directory named 'trim'> [options]")
     sys.exit(-1)
 
 if options.ena:
@@ -244,7 +244,7 @@ if options.ena:
 
 inFileName = args[0]
 reference = args[1]
-pathToFastQ = args[2]
+pathToFastQ = "./trim" #args[2]
 
 inFile = open(inFileName, 'r')
 
@@ -252,6 +252,7 @@ projectname = inFileName.strip(".txt")
 
 kvmap= {'projectname':projectname}
 
+call_with_log("mkdir -p trimfastqc")
 call_with_log("mkdir -p fastqc")
 call_with_log("mkdir -p {projectname}_vcf")
 call_with_log("mkdir -p trim")

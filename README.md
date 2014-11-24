@@ -15,7 +15,7 @@ For example:
 
 > ERR07108	ERS088906	ERX048850	illumina	paired
 
-The script must be run from a folder with downloaded .sra files. There must also be a subdirectory called "trimfastqc" as well as a subdirectory titled "trim". The path to the indexed reference .fa file must also be provided.
+The script must be run from a folder with downloaded .sra files. The path to the indexed reference .fa file must also be provided.
 
 When running the script, type:
 > python [path to SRAtoVCF.py] [path to .txt file] [.fasta reference file] [path to directory named "trim"]
@@ -103,7 +103,7 @@ In the template directory lies all the reference genome files for M.Tb (the H37R
 
 This will create a folder of several sub directories in which ERR027082.sra is located. Move the .sra file to working directory. There should also be to folders in the current working directory that you need to make. trim and trimfastqc , Then run the following command to execute SRAtoVCF.ipy:
 
-> ipython SRAtoVCF.ipy ERP000132.txt H37Rv.fasta ./trim
+> ipython SRAtoVCF.ipy ERP000132.txt H37Rv.fasta 
 
 This will create a folder called ERP000132_vcf and within it will be a file ERR027082.vcf. You will use this file to run VCFtoSnpTable.py by running the command:
 
