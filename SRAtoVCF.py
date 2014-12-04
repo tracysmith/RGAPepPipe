@@ -5,9 +5,8 @@
 #SRAReadGroupID     SampleGroupID     LibraryID       SeqPlatform     paired/single
 #ERR071082       ERS088906       ERX048850       illumina        paired
 #Must be run from folder with indexed reference genome files in it as well as downloaded .sra files
-#Must also have a folder within this folder called "trimfastqc"
 #When running the script, type:
-#ipython [path to script file] [path to .txt file] [.fasta reference file] [path to directory named "trim"]
+#python [path to script file] [path to .txt file] [.fasta reference file] [options]
 
 
 import sys,os,subprocess, shlex, glob
@@ -236,7 +235,7 @@ parser.set_defaults(start_prog="fastq_dump", verbose=False, ena=False)
 (options, args) = parser.parse_args()
 
 if(len(args) != 2):
-    print("usage: <path to .txt file> <.fasta reference file> [options]")#<path to directory named 'trim'> [options]")
+    print("usage: <path to .txt file> <.fasta reference file> [options]")
     sys.exit(-1)
 
 if options.ena:
@@ -244,18 +243,22 @@ if options.ena:
 
 inFileName = args[0]
 reference = args[1]
-pathToFastQ = "./trim" #args[2]
+
 
 inFile = open(inFileName, 'r')
-
 projectname = inFileName.strip(".txt")
-
 kvmap= {'projectname':projectname}
+
+if(len(args) == 3):
+    pathToFastQ = args[2]
+else:
+    call_with_log("mkdir -p trim")
+    pathToFastQ = "./trim"
+
 
 call_with_log("mkdir -p trimfastqc")
 call_with_log("mkdir -p fastqc")
 call_with_log("mkdir -p {projectname}_vcf")
-call_with_log("mkdir -p trim")
 call_with_log("mkdir -p intermediate_files")
 
 #dictionary for starting the pipeline in the middle

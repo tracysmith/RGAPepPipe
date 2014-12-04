@@ -18,7 +18,7 @@ For example:
 The script must be run from a folder with downloaded .sra files. The path to the indexed reference .fa file must also be provided.
 
 When running the script, type:
-> python [path to SRAtoVCF.py] [path to .txt file] [.fasta reference file] [path to directory named "trim"]
+> python [options] [path to SRAtoVCF.py] [path to .txt file] [.fasta reference file] [options]
 
 For other available command line options run "python SRAtoVCF.py -h"
 
