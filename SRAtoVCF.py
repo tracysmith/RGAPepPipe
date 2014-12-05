@@ -182,9 +182,9 @@ def readgroups():
 def realign():
     print("realign started")
     
-    call_with_log("java -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -I {RGID}.ready.bam -R {reference} -T RealignerTargetCreator -o {RGID}.intervals") 
+    call_with_log("java -Xmx2g -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -I {RGID}.ready.bam -R {reference} -T RealignerTargetCreator -o {RGID}.intervals") 
 
-    call_with_log("java -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -I {RGID}.ready.bam -R {reference} -T IndelRealigner -targetIntervals {RGID}.intervals -o {RGID}.realn.bam")
+    call_with_log("java -Xmx2g -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -I {RGID}.ready.bam -R {reference} -T IndelRealigner -targetIntervals {RGID}.intervals -o {RGID}.realn.bam")
     
     print('realign completed')
     
@@ -194,8 +194,8 @@ def realign():
 def vcf():
     print("vcf started")
     
-    call_with_log("java -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -I {RGID}.realn.bam -R {reference} -T UnifiedGenotyper -o {RGID}.vcf -out_mode EMIT_ALL_CONFIDENT_SITES -stand_call_conf 20 -stand_emit_conf 20 --sample_ploidy 1 -nt 6 -rf BadCigar")
-    call_with_log("java -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -I {RGID}.realn.bam -R {reference} -T DepthOfCoverage -L {RGID}.intervals -U -S SILENT -rf BadCigar")
+    call_with_log("java -Xmx2g -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -I {RGID}.realn.bam -R {reference} -T UnifiedGenotyper -o {RGID}.vcf -out_mode EMIT_ALL_CONFIDENT_SITES -stand_call_conf 20 -stand_emit_conf 20 --sample_ploidy 1 -nt 6 -rf BadCigar")
+    call_with_log("java -Xmx2g -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -I {RGID}.realn.bam -R {reference} -T DepthOfCoverage -L {RGID}.intervals -U -S SILENT -rf BadCigar")
     
     print('vcf completed')
     
@@ -212,7 +212,11 @@ def cleanup():
     files.extend(glob.glob(RGID + "_?.*"));
     
     for file in files:
-        call_with_log("mv {file} ./intermediate_files".format(file = file))
+        if file.endswith(".fastq") or file.endswith(".realn.bam"):
+            call_with_log("mv {file} ./saved_files".format(file = file) )
+
+        else:
+            call_with_log("mv {file} ./intermediate_files".format(file = file))
    
     print ('cleanup completed')
 
@@ -260,6 +264,7 @@ call_with_log("mkdir -p trimfastqc")
 call_with_log("mkdir -p fastqc")
 call_with_log("mkdir -p {projectname}_vcf")
 call_with_log("mkdir -p intermediate_files")
+call_with_log("mkdir -p saved_files")
 
 #dictionary for starting the pipeline in the middle
 
