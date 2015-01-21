@@ -212,7 +212,7 @@ def cleanup():
     files.extend(glob.glob(RGID + "_?.*"));
     
     for file in files:
-        if file.endswith(".fastq") or file.endswith(".realn.bam"):
+        if file.endswith(".fastq") or file.endswith(".realn.bam") or file.endswith(".realn.bai"):
             call_with_log("mv {file} ./saved_files".format(file = file) )
 
         else:
