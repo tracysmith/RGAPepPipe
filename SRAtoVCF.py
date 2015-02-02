@@ -75,14 +75,14 @@ def fastq_dump():
         logfile.write(line + '\n')
         logfile.write(RGID+ ' - not illumina' + '\n')
         logfile.close()
-    if os.path.exists(RGID+'_2.fastq') != True and pair == 'paired':
+    if os.path.exists(fastqdir + '/' + RGID +'_2.fastq') != True and pair == 'paired':
         call_with_log("rm {RGID}_1.fastq")
     else:
         fastqc()
 
 def fastqc():
     print("fastqc started")
-    filename = RGID + '_1.fastq'
+    filename = fastqdir + '/' + RGID + '_1.fastq'
     file = open(filename,'r')
     lines = file.readlines()
     fLine = lines[0]
@@ -93,9 +93,9 @@ def fastqc():
         snum = len(lines[1]) 
     numBP = int(snum)
     if pair == 'paired':
-        call_with_log("/opt/PepPrograms/RGAPipeline/fastqc {RGID}_1.fastq {RGID}_2.fastq -t 6 -o ./fastqc")
+        call_with_log("/opt/PepPrograms/RGAPipeline/fastqc {fastqdir}/{RGID}_1.fastq {fastqdir}/{RGID}_2.fastq -t 6 -o ./fastqc")
     elif pair == 'single':
-        call_with_log("/opt/PepPrograms/RGAPipeline/fastqc {RGID}_1.fastq")
+        call_with_log("/opt/PepPrograms/RGAPipeline/fastqc {fastqdir}/{RGID}_1.fastq")
         
     print("fastqc completed")
     
@@ -105,9 +105,9 @@ def trim_galore(numBP):
     print("trim_galore started")
     
     if pair == 'paired':
-        call_with_log("/opt/PepPrograms/RGAPipeline/trim_galore -q 15 --fastqc_args \"-t 6 -o ./trimfastqc\"  -stringency 7 -o ./trim --paired --retain_unpaired {RGID}_1.fastq {RGID}_2.fastq")
+        call_with_log("/opt/PepPrograms/RGAPipeline/trim_galore -q 15 --fastqc_args \"-t 6 -o ./trimfastqc\"  -stringency 7 -o {pathToFastQ} --paired --retain_unpaired {fastqdir}/{RGID}_1.fastq {fastqdir}/{RGID}_2.fastq")
     elif pair == 'single':
-        call_with_log("/opt/PepPrograms/RGAPipeline/trim_galore -q 15 --fastqc_args \"-t 6 -o ./trimfastqc\"  -stringency 7 -o ./trim  {RGID}_1.fastq")
+        call_with_log("/opt/PepPrograms/RGAPipeline/trim_galore -q 15 --fastqc_args \"-t 6 -o ./trimfastqc\"  -stringency 7 -o {pathToFastQ}  {fastqdir}/{RGID}_1.fastq")
         
     print('trim_galore completed')
     
@@ -234,16 +234,20 @@ parser.add_option("-v", "--verbose", action="store_true", dest="verbose", help="
 
 parser.add_option("--ena", action="store_true", dest="ena", help="Skips fastq_dump for every file. For read data already in fastq format.")
 
+parser.add_option("-d","--fastqdir", dest="fastqdir",default=".", help="Specify a directory that contains .fastq files.")
+
 parser.set_defaults(start_prog="fastq_dump", verbose=False, ena=False)
 
 (options, args) = parser.parse_args()
 
-if(len(args) != 2):
+if(len(args) < 2):
     print("usage: <path to .txt file> <.fasta reference file> [options]")
     sys.exit(-1)
 
 if options.ena:
     options.start_prog="fastqc"
+
+
 
 inFileName = args[0]
 reference = args[1]
@@ -253,12 +257,15 @@ inFile = open(inFileName, 'r')
 projectname = inFileName.strip(".txt")
 kvmap= {'projectname':projectname}
 
-if(len(args) == 3):
-    pathToFastQ = args[2]
+if(len(args) >= 3):
+    pathToFastQ = os.path.abspath(args[-1])
+    if not os.path.isdir(pathToFastQ):
+        call_with_log("mkdir -p " + pathToFastQ)
 else:
     call_with_log("mkdir -p trim")
     pathToFastQ = "./trim"
 
+fastqdir = os.path.abspath(options.fastqdir) #Set fastqdir to what was specified, or "" if not
 
 call_with_log("mkdir -p trimfastqc")
 call_with_log("mkdir -p fastqc")
@@ -298,7 +305,8 @@ for line in inFile:
         'RGPL':RGPL,
         'reference':reference,
         'pathToFastQ':pathToFastQ,
-        'projectname':projectname
+        'projectname':projectname,
+        'fastqdir':fastqdir #ADDED: specify path to fastq directory
     }
     
     #start the program at the specified program
