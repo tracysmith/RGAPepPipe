@@ -206,7 +206,7 @@ def vcf():
 def cleanup():
     print("cleanup started")
     
-    call_with_log("mv {RGID}.vcf ./{projectname}_vcf")
+    call_with_log("mv {RGID}.vcf {projectname}_vcf")
     
     files = glob.glob(RGID + ".*");    
     files.extend(glob.glob(RGID + "_?.*"));
