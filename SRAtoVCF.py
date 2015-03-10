@@ -228,7 +228,7 @@ def cleanup():
     
 parser = OptionParser(usage="usage: %prog [options] <path to .txt file> <.fasta reference file>")
 
-parser.add_option("-p", "--program", dest="start_prog", help="program to start executing at: fastq_dump, fastqc, trim_galore, bwa, sort, dedup, readgroups, realign, vcf, cleanup [default: fastq_dump] (You must have run the pipeline up to the chosen starting program for this option to work)")
+parser.add_option("-p", "--program", dest="start_prog", help="program to start executing at: fastq_dump, fastqc, trim_galore, bwa (for longer reads), bwashort (for shorter reads), sort, dedup, readgroups, realign, vcf, cleanup [default: fastq_dump] (You must have run the pipeline up to the chosen starting program for this option to work)")
 
 parser.add_option("-v", "--verbose", action="store_true", dest="verbose", help="Runs program in verbose mode which enables all debug output.")
 
@@ -281,7 +281,8 @@ functiondict =  {
         'fastq_dump':fastq_dump,
         'fastqc':fastqc,
         'trim_galore':trim_galore,
-        'bwa':bwa,
+        'bwa':bwaMEM,
+        'bwashort':bwa,
         'sort':sort,
         'dedup':dedup,
         'readgroups':readgroups,
