@@ -111,10 +111,10 @@ def trim_galore(numBP):
         
     print('trim_galore completed')
     
-    if numBP >= 70:
-        bwaMEM()
-    else:
+    if numBP < 70:
         bwa()
+    else: #assumes numBP >= 70
+        bwaMEM()
 
 #Command to map with BWA (>70 bp)
 def bwaMEM():
