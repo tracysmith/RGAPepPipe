@@ -93,6 +93,10 @@ Usage:
 
 > enaFileParser.py [input ENA text file]
 
+get_url.py
+---------
+This script takes as input the ERPXXXXXX_download.txt file output by the enaFileParser.py and runs wget to download the fastq files. A '-t' flag allows the user to specify the number of threads.
+
 Example
 --------
 
