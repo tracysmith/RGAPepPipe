@@ -5,9 +5,8 @@
 #SRAReadGroupID     SampleGroupID     LibraryID       SeqPlatform     paired/single
 #ERR071082       ERS088906       ERX048850       illumina        paired
 #Must be run from folder with indexed reference genome files in it as well as downloaded .sra files
-#Must also have a folder within this folder called "trimfastqc"
 #When running the script, type:
-#ipython [path to script file] [path to .txt file] [.fasta reference file] [path to directory named "trim"]
+#python [path to script file] [path to .txt file] [.fasta reference file] [options]
 
 
 import sys,os,subprocess, shlex, glob
@@ -33,7 +32,7 @@ def call_with_log(cmd):
         logfile.close()
         sys.exit(-1)
     logfile.close()
-	
+    
 #bwa uses a redirect in its command so logging of stdout is unavailable 
 def call_bwa_with_log(cmd, filename):
     cmd = cmd.format(**(kvmap))
@@ -76,14 +75,14 @@ def fastq_dump():
         logfile.write(line + '\n')
         logfile.write(RGID+ ' - not illumina' + '\n')
         logfile.close()
-    if os.path.exists(RGID+'_2.fastq') != True and pair == 'paired':
+    if os.path.exists(fastqdir + '/' + RGID +'_2.fastq') != True and pair == 'paired':
         call_with_log("rm {RGID}_1.fastq")
     else:
         fastqc()
 
 def fastqc():
     print("fastqc started")
-    filename = RGID + '_1.fastq'
+    filename = fastqdir + '/' + RGID + '_1.fastq'
     file = open(filename,'r')
     lines = file.readlines()
     fLine = lines[0]
@@ -94,9 +93,9 @@ def fastqc():
         snum = len(lines[1]) 
     numBP = int(snum)
     if pair == 'paired':
-        call_with_log("/opt/PepPrograms/RGAPipeline/fastqc {RGID}_1.fastq {RGID}_2.fastq -t 6 -o ./fastqc")
+        call_with_log("/opt/PepPrograms/RGAPipeline/fastqc {fastqdir}/{RGID}_1.fastq {fastqdir}/{RGID}_2.fastq -t {threads} -o ./fastqc")
     elif pair == 'single':
-        call_with_log("/opt/PepPrograms/RGAPipeline/fastqc {RGID}_1.fastq")
+        call_with_log("/opt/PepPrograms/RGAPipeline/fastqc {fastqdir}/{RGID}_1.fastq")
         
     print("fastqc completed")
     
@@ -106,16 +105,16 @@ def trim_galore(numBP):
     print("trim_galore started")
     
     if pair == 'paired':
-        call_with_log("/opt/PepPrograms/RGAPipeline/trim_galore -q 15 --fastqc_args \"-t 6 -o ./trimfastqc\"  -stringency 7 -o ./trim --paired --retain_unpaired {RGID}_1.fastq {RGID}_2.fastq")
+        call_with_log("/opt/PepPrograms/RGAPipeline/trim_galore -q 15 --fastqc_args \"-t {threads} -o ./trimfastqc\"  -stringency 7 -o {pathToFastQ} --paired --retain_unpaired {fastqdir}/{RGID}_1.fastq {fastqdir}/{RGID}_2.fastq")
     elif pair == 'single':
-        call_with_log("/opt/PepPrograms/RGAPipeline/trim_galore -q 15 --fastqc_args \"-t 6 -o ./trimfastqc\"  -stringency 7 -o ./trim  {RGID}_1.fastq")
+        call_with_log("/opt/PepPrograms/RGAPipeline/trim_galore -q 15 --fastqc_args \"-t {threads} -o ./trimfastqc\"  -stringency 7 -o {pathToFastQ}  {fastqdir}/{RGID}_1.fastq")
         
     print('trim_galore completed')
     
-    if numBP >= 70:
-        bwaMEM()
-    else:
+    if numBP < 70:
         bwa()
+    else: #assumes numBP >= 70
+        bwaMEM()
 
 #Command to map with BWA (>70 bp)
 def bwaMEM():
@@ -123,9 +122,9 @@ def bwaMEM():
     
     if pair =='paired':
         print("inside paired if")
-        call_bwa_with_log("/opt/PepPrograms/RGAPipeline/bwa mem -M -t 6 {reference} {pathToFastQ}/{RGID}_1_val_1.fq {pathToFastQ}/{RGID}_2_val_2.fq", "{RGID}.sam")
+        call_bwa_with_log("/opt/PepPrograms/RGAPipeline/bwa mem -M -t {threads} {reference} {pathToFastQ}/{RGID}_1_val_1.fq {pathToFastQ}/{RGID}_2_val_2.fq", "{RGID}.sam")
     elif pair == 'single':
-        call_bwa_with_log("/opt/PepPrograms/RGAPipeline/bwa mem -M -t 6 {reference} {pathToFastQ}/{RGID}_1_trimmed.fq", "{RGID}.sam")
+        call_bwa_with_log("/opt/PepPrograms/RGAPipeline/bwa mem -M -t {threads} {reference} {pathToFastQ}/{RGID}_1_trimmed.fq", "{RGID}.sam")
         
     print('bwa completed')
     
@@ -137,11 +136,11 @@ def bwa():
     print("bwa started")
     
     if pair == 'paired':
-        call_bwa_with_log("/opt/PepPrograms/RGAPipeline/bwa aln -t 6 {reference} {pathToFastQ}/{RGID}_1_val_1.fq", "{RGID}_1.sai")
-        call_bwa_with_log("/opt/PepPrograms/RGAPipeline/bwa aln -t 6 {reference} {pathToFastQ}/{RGID}_2_val_2.fq", "{RGID}_2.sai")
+        call_bwa_with_log("/opt/PepPrograms/RGAPipeline/bwa aln -t {threads} {reference} {pathToFastQ}/{RGID}_1_val_1.fq", "{RGID}_1.sai")
+        call_bwa_with_log("/opt/PepPrograms/RGAPipeline/bwa aln -t {threads} {reference} {pathToFastQ}/{RGID}_2_val_2.fq", "{RGID}_2.sai")
         call_bwa_with_log("/opt/PepPrograms/RGAPipeline/bwa sampe -P {reference} {RGID}_1.sai {RGID}_2.sai {pathToFastQ}/{RGID}_1_val_1.fq {pathToFastQ}/{RGID}_2_val_2.fq", "{RGID}.sam")
     elif pair == 'single':
-        call_bwa_with_log("/opt/PepPrograms/RGAPipeline/bwa aln -t 6 {reference} {pathToFastQ}/{RGID}_1_trimmed.fq", "{RGID}.sai")
+        call_bwa_with_log("/opt/PepPrograms/RGAPipeline/bwa aln -t {threads} {reference} {pathToFastQ}/{RGID}_1_trimmed.fq", "{RGID}.sai")
         call_bwa_with_log("/opt/PepPrograms/RGAPipeline/bwa samse {reference} {RGID}.sai {pathToFastQ}/{RGID}_1_trimmed.fq", "{RGID}.sam")
         
     print('bwa completed')
@@ -183,9 +182,9 @@ def readgroups():
 def realign():
     print("realign started")
     
-    call_with_log("java -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -I {RGID}.ready.bam -R {reference} -T RealignerTargetCreator -o {RGID}.intervals") 
+    call_with_log("java -Xmx2g -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -I {RGID}.ready.bam -R {reference} -T RealignerTargetCreator -o {RGID}.intervals") 
 
-    call_with_log("java -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -I {RGID}.ready.bam -R {reference} -T IndelRealigner -targetIntervals {RGID}.intervals -o {RGID}.realn.bam")
+    call_with_log("java -Xmx2g -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -I {RGID}.ready.bam -R {reference} -T IndelRealigner -targetIntervals {RGID}.intervals -o {RGID}.realn.bam")
     
     print('realign completed')
     
@@ -195,8 +194,8 @@ def realign():
 def vcf():
     print("vcf started")
     
-    call_with_log("java -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -I {RGID}.realn.bam -R {reference} -T UnifiedGenotyper -o {RGID}.vcf -out_mode EMIT_ALL_CONFIDENT_SITES -stand_call_conf 20 -stand_emit_conf 20 --sample_ploidy 1 -nt 6 -rf BadCigar")
-    call_with_log("java -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -I {RGID}.realn.bam -R {reference} -T DepthOfCoverage -L {RGID}.intervals -U -S SILENT -rf BadCigar")
+    call_with_log("java -Xmx2g -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -I {RGID}.realn.bam -R {reference} -T UnifiedGenotyper -o {RGID}.vcf -out_mode EMIT_ALL_CONFIDENT_SITES -stand_call_conf 20 -stand_emit_conf 20 --sample_ploidy 1 -nt {threads} -rf BadCigar")
+    call_with_log("java -Xmx2g -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -I {RGID}.realn.bam -R {reference} -T DepthOfCoverage -L {RGID}.intervals -U -S SILENT -rf BadCigar")
     
     print('vcf completed')
     
@@ -207,55 +206,74 @@ def vcf():
 def cleanup():
     print("cleanup started")
     
-    call_with_log("mv {RGID}.vcf ./{projectname}_vcf")
+    call_with_log("mv {RGID}.vcf {projectname}_vcf")
     
     files = glob.glob(RGID + ".*");    
     files.extend(glob.glob(RGID + "_?.*"));
     
     for file in files:
-        call_with_log("mv {file} ./intermediate_files".format(file = file))
+        if file.endswith(".fastq") or file.endswith(".realn.bam") or file.endswith(".realn.bai"):
+            call_with_log("mv {file} ./saved_files".format(file = file) )
+
+        else:
+            call_with_log("mv {file} ./intermediate_files".format(file = file))
    
     print ('cleanup completed')
 
-	
+    
 ##begin main execution
 
 
 ##for command line argument processing
-	
-parser = OptionParser(usage="usage: %prog [options] <path to .txt file> <.fasta reference file> <path to directory named 'trim'> ")
+    
+parser = OptionParser(usage="usage: %prog [options] <path to .txt file> <.fasta reference file>")
 
-parser.add_option("-p", "--program", dest="start_prog", help="program to start executing at: fastq_dump, fastqc, trim_galore, bwa, sort, dedup, readgroups, realign, vcf, cleanup [default: fastq_dump] (You must have run the pipeline up to the chosen starting program for this option to work)")
+parser.add_option("-p", "--program", dest="start_prog", help="program to start executing at: fastq_dump, fastqc, trim_galore, bwa (for longer reads), bwashort (for shorter reads), sort, dedup, readgroups, realign, vcf, cleanup [default: fastq_dump] (You must have run the pipeline up to the chosen starting program for this option to work)")
 
 parser.add_option("-v", "--verbose", action="store_true", dest="verbose", help="Runs program in verbose mode which enables all debug output.")
 
 parser.add_option("--ena", action="store_true", dest="ena", help="Skips fastq_dump for every file. For read data already in fastq format.")
 
-parser.set_defaults(start_prog="fastq_dump", verbose=False, ena=False)
+parser.add_option("-d","--fastqdir", dest="fastqdir",default=".", help="Specify a directory that contains .fastq files.")
+
+parser.add_option("-t","--threads", type="int", dest="numthreads", help="Specify the number of threads that should be used.")
+
+parser.set_defaults(start_prog="fastq_dump", verbose=False, ena=False, numthreads=6)
 
 (options, args) = parser.parse_args()
 
-if(len(args) != 3):
-    print("usage: <path to .txt file> <.fasta reference file> <path to directory named 'trim'> [options]")
+if(len(args) < 2):
+    print("usage: <path to .txt file> <.fasta reference file> [options]")
     sys.exit(-1)
 
 if options.ena:
     options.start_prog="fastqc"
 
+program = options.start_prog
+
 inFileName = args[0]
 reference = args[1]
-pathToFastQ = args[2]
+
 
 inFile = open(inFileName, 'r')
-
-projectname = inFileName.strip(".txt")
-
+projectname = os.path.basename( inFileName.strip(".txt") )
 kvmap= {'projectname':projectname}
 
+if(len(args) >= 3):
+    pathToFastQ = os.path.abspath(args[-1])
+    if not os.path.isdir(pathToFastQ):
+        call_with_log("mkdir -p " + pathToFastQ)
+else:
+    call_with_log("mkdir -p trim")
+    pathToFastQ = "trim"
+
+fastqdir = os.path.abspath(options.fastqdir) #Set fastqdir to what was specified, or "" if not
+
+call_with_log("mkdir -p trimfastqc")
 call_with_log("mkdir -p fastqc")
 call_with_log("mkdir -p {projectname}_vcf")
-call_with_log("mkdir -p trim")
 call_with_log("mkdir -p intermediate_files")
+call_with_log("mkdir -p saved_files")
 
 #dictionary for starting the pipeline in the middle
 
@@ -263,7 +281,8 @@ functiondict =  {
         'fastq_dump':fastq_dump,
         'fastqc':fastqc,
         'trim_galore':trim_galore,
-        'bwa':bwa,
+        'bwa':bwaMEM,
+        'bwashort':bwa,
         'sort':sort,
         'dedup':dedup,
         'readgroups':readgroups,
@@ -289,16 +308,18 @@ for line in inFile:
         'RGPL':RGPL,
         'reference':reference,
         'pathToFastQ':pathToFastQ,
-        'projectname':projectname
+        'projectname':projectname,
+        'fastqdir':fastqdir, 
+        'threads':options.numthreads
     }
     
     #start the program at the specified program
-    
     functiondict[options.start_prog]()
     if options.ena:
         options.start_prog="fastqc"
     else:
-        options.start_prog = "fastq_dump"
+        #options.start_prog = "fastq_dump"
+        options.start_prog = program
             
 
 inFile.close()
