@@ -238,7 +238,9 @@ parser.add_option("-d","--fastqdir", dest="fastqdir",default=".", help="Specify 
 
 parser.add_option("-t","--threads", type="int", dest="numthreads", help="Specify the number of threads that should be used.")
 
-parser.set_defaults(start_prog="fastq_dump", verbose=False, ena=False, numthreads=6)
+parser.add_option("-s","--skip", action="store_true", dest="skip", help="Continue even if errors occur.")
+
+parser.set_defaults(start_prog="fastq_dump", verbose=False, ena=False, numthreads=6, skip=False)
 
 (options, args) = parser.parse_args()
 
@@ -314,9 +316,19 @@ for line in inFile:
     }
     
     #start the program at the specified program
-    functiondict[options.start_prog]()
+    try:
+        #test to see if the file exists
+        call_with_log("ls {fastqdir}/{RGID}_1.fastq")
+        functiondict[options.start_prog]()
+
+    except:
+        if(options.skip):
+            print "\nFile {0} not found, skipping.\n".format(RGID)
+            continue
+        else: break
+
     if options.ena:
-        options.start_prog="fastqc"
+        options.start_prog="fastqc" 
     else:
         #options.start_prog = "fastq_dump"
         options.start_prog = program
