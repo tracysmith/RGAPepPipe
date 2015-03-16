@@ -66,7 +66,7 @@ def call_sort_with_log(cmd, cmd2):
 def fastq_dump():
     print("fastq_dump started")
     
-    call_with_log("/opt/PepPrograms/RGAPipeline/fastq-dump --split-files {RGID}.sra")
+    call_with_log("/opt/PepPrograms/sratoolkit.2.3.4-2-ubuntu64/bin/fastq-dump.2.3.4 --split-files {RGID}")
     
     print("fastq_dump completed")
     

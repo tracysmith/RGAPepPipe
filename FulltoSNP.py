@@ -66,7 +66,7 @@ OutFile.write("#NEXUS" + "\n" + "Begin DATA;" + "\n\t" + "Dimensions ntax=" + st
 #write all of the SNPs into the new file
 for key in SeqDict:
     newSeq = "".join(SeqDict[key])
-    OutFile.write(key + "\n" + newSeq + "\n")
+    OutFile.write("'" + key + "'" + "\t" + newSeq + "\n")
 OutFile.write(";" + "\n" + "END;")
 OutFile.close()
 OutFile2 = open(PosOutFileName,'w')
