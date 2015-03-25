@@ -318,12 +318,23 @@ for line in inFile:
     #start the program at the specified program
     try:
         #test to see if the file exists
-        call_with_log("ls {fastqdir}/{RGID}_1.fastq")
+        #call_with_log("ls {fastqdir}/{RGID}_1.fastq")
+        if not (glob.glob(fastqdir + '/' + RGID +'*')): #True if glob returns an empty list
+            
+            #print "\nFile {0} not found.\n".format(RGID)
+            raise FileNotFoundError 
+
         functiondict[options.start_prog]()
 
+    except IOError:
+        print "\nFile {0} not found.\n".format(RGID)
+        if(options.skip):
+            continue
+        else: break
+        
     except:
         if(options.skip):
-            print "\nFile {0} not found, skipping.\n".format(RGID)
+            print "\nError occurred with file {0}, skipping.\n".format(RGID)
             continue
         else: break
 
