@@ -152,7 +152,8 @@ def bwa():
 def sort():
     print("sort started")
     
-    call_sort_with_log("/opt/PepPrograms/RGAPipeline/samtools view -bhSu {RGID}.sam", "samtools sort - {RGID}.sort")
+    call_sort_with_log("/opt/PepPrograms/RGAPipeline/samtools view -bhSu \
+{RGID}.sam", "/opt/PepPrograms/RGAPipeline/samtools sort - {RGID}.sort")
     
     print('sort completed')
     
