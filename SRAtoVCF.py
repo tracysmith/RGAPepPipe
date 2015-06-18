@@ -196,18 +196,23 @@ def vcf():
     print("vcf started")
     
     call_with_log("java -Xmx2g -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -I {RGID}.realn.bam -R {reference} -T UnifiedGenotyper -o {RGID}.vcf -out_mode EMIT_ALL_CONFIDENT_SITES -stand_call_conf 20 -stand_emit_conf 20 --sample_ploidy 1 -nt {threads} -rf BadCigar")
-    call_with_log("java -Xmx2g -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -I {RGID}.realn.bam -R {reference} -T DepthOfCoverage -L {RGID}.intervals -U -S SILENT -rf BadCigar")
+    #call_with_log("java -Xmx2g -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -I {RGID}.realn.bam -R {reference} -T DepthOfCoverage -L {RGID}.intervals -U -S SILENT -rf BadCigar")
     
     print('vcf completed')
+
+    call_with_log("java -Xmx2g -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysis\
+TK.jar  -T VariantFiltration -R {reference} -o {RGID}_filter.vcf --variant \
+{RGID}.vcf --filterExpression \"QD < 2.0 || FS > 60.0 || MQ < 40.0 || MQRankSum\
+ < -12.5 || ReadPosRankSum < -8.0\" --filterName \"RGAPepPipeFilter\"")
     
-    if os.path.exists (RGID+'.vcf') == True:
+    if os.path.exists(RGID + '_filter.vcf') == True:
         cleanup()
 
 #Command to organize folder
 def cleanup():
     print("cleanup started")
     
-    call_with_log("mv {RGID}.vcf {projectname}_vcf")
+    call_with_log("mv {RGID}.vcf {RGID}_filter.vcf {projectname}_vcf")
     
     files = glob.glob(RGID + ".*");    
     files.extend(glob.glob(RGID + "_?.*"));
