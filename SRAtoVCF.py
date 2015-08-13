@@ -66,7 +66,7 @@ def call_sort_with_log(cmd, cmd2):
 def fastq_dump():
     print("fastq_dump started")
     
-    call_with_log("/opt/PepPrograms/sratoolkit.2.3.4-2-ubuntu64/bin/fastq-dump.2.3.4 --split-files {RGID}")
+    call_with_log("/opt/PepPrograms/sratoolkit.2.3.4-2-centos_linux64/bin/fastq-dump.2.3.4 --split-files {RGID}")
     
     print("fastq_dump completed")
     
@@ -223,7 +223,9 @@ def cleanup():
 
         else:
             call_with_log("mv {file} ./intermediate_files".format(file = file))
-   
+    
+    call_with_log("rm -r ./intermediate_files") 
+    
     print ('cleanup completed')
 
     
