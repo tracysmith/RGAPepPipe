@@ -46,19 +46,21 @@ for i, line in enumerate(inFile):
     else:
         line = line.strip()
         entries = line.split('\t')
-        readGroup = entries[rgIndex]
-        sampleID = entries[sampIndex]
-        experimentID = entries[exIndex]
-        platform = entries[platIndex]
-        if 'illumina' in platform.lower():
-            platform = 'illumina'
-        library = entries[libIndex].lower()
-        readURL = entries[urlIndex]
-        pipelineFile.write('%s\t%s\t%s\t%s\t%s\n' % (readGroup, sampleID, 
+        if len(entries) > urlIndex:
+            readGroup = entries[rgIndex]
+            sampleID = entries[sampIndex]
+            experimentID = entries[exIndex]
+            platform = entries[platIndex]
+            if 'illumina' in platform.lower():
+                platform = 'illumina'
+            library = entries[libIndex].lower()
+            readURL = entries[urlIndex]
+            pipelineFile.write('%s\t%s\t%s\t%s\t%s\n' % (readGroup, sampleID, 
                             experimentID, platform, library))
-        for url in readURL.split(';'):
-            downloadFile.write(url + '\n')
-        
+            for url in readURL.split(';'):
+                downloadFile.write(url + '\n')
+        else:
+            print('Problem with ' + entries[rgIndex])
 inFile.close()
 downloadFile.close()
 pipelineFile.close()

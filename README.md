@@ -26,37 +26,37 @@ For other available command line options run "python SRAtoVCF.py -h"
 
 fastq-dump
   * part of the SRAtoolkit software package available from NCBI
-  * we use version 2.2.0
+  * we use version 2.5.2
   * converts SRA format files to fastq  
 
 fastqc
   * available from Babraham Bioinformatics, package includes necessary Picard BAM/SAM libraries
-  * we use v0.10.1
+  * we use v0.11.3
   * performs quality checks on read data in fastq files  
 
 trim-galore
   * available from Babraham Bioinformatics, fastqc and cutadapt are required
-  * we use version 0.2.6 
+  * we use version 0.4.0 
   * trims bases below a given quality threshold, removes adapter sequences, and reruns fastqc on trimmed data  
 
 bwa
   * available from bio-bwa.sourceforge.net
-  * we use version 0.7.7 
+  * we use version 0.7.12 
   * maps reads to reference sequence  
 
 SAMtools
   * available from samtools.sourceforge.net 
-  * we use version 0.1.18  
+  * we use version 1.2 
   * sorts bam files by coordinates  
 
 Picard-tools
   * available from picard.sourceforge.net
-  * we use version 1.107
+  * we use version 1.138
   * removes duplicates and edits read group information  
 
 GATK (genome analysis toolkit)
   * available from broad institute
-  * we use version 2.8.1
+  * we use version 3.4.46
   * locally realigns reads and produces VCF  
 
 Java 7 must also be installed. 
