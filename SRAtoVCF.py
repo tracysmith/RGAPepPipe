@@ -163,7 +163,7 @@ def sort():
 def dedup():
     print("dedup started")
     
-    call_with_log("java -Xmx2g -jar /opt/PepPrograms/RGAPipeline/MarkDuplicates.jar I={RGID}.sort.bam O={RGID}.dedup.bam M={RGID}.metrics REMOVE_DUPLICATES=true AS=true VALIDATION_STRINGENCY=SILENT")
+    call_with_log("java -Xmx2g -jar /opt/PepPrograms/RGAPipeline/picard.jar MarkDuplicates I={RGID}.sort.bam O={RGID}.dedup.bam M={RGID}.metrics REMOVE_DUPLICATES=true AS=true VALIDATION_STRINGENCY=SILENT")
     
     print('dedup completed')
     
@@ -173,7 +173,7 @@ def dedup():
 def readgroups():
     print("readgroups started")
     
-    call_with_log("java -Xmx2g -jar /opt/PepPrograms/RGAPipeline/AddOrReplaceReadGroups.jar I={RGID}.dedup.bam O={RGID}.ready.bam RGID={RGID} RGLB={RGLB} RGPL={RGPL} RGPU=dummy-barcode RGSM={RGSM} VALIDATION_STRINGENCY=SILENT SORT_ORDER=coordinate CREATE_INDEX=true")
+    call_with_log("java -Xmx2g -jar /opt/PepPrograms/RGAPipeline/picard.jar AddOrReplaceReadGroups I={RGID}.dedup.bam O={RGID}.ready.bam RGID={RGID} RGLB={RGLB} RGPL={RGPL} RGPU=dummy-barcode RGSM={RGSM} VALIDATION_STRINGENCY=SILENT SORT_ORDER=coordinate CREATE_INDEX=true")
     
     print('readgroups completed')
     
