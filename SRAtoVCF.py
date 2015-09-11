@@ -224,8 +224,6 @@ def cleanup():
         else:
             call_with_log("mv {file} ./intermediate_files".format(file = file))
     
-    call_with_log("rm -r ./intermediate_files") 
-    
     print ('cleanup completed')
 
     
