@@ -20,7 +20,9 @@ if len(sys.argv) < 3 :
 
 outFile = open(sys.argv[(len(sys.argv) - 1)], 'w')
 for n in sys.argv[1:(len(sys.argv) - 1)] :
-    
+
+    RGID = n.split("_")[0]
+
     inFile = open(n, "r")
 
     # parse data into a dictionary indexed by locus of snp
@@ -41,7 +43,7 @@ for n in sys.argv[1:(len(sys.argv) - 1)] :
             if tokens[4] == ".": #if not a SNP but confident site
                 tokens[4] = tokens[3]
             tup = strain, tokens[3], tokens[4]
-            outFile.write(tup[0] + "\tlocus " + tokens[1] + "\t" + tup[1] + "->" + tup[2] + "\n")
+            outFile.write(tup[0] + "_" + RGID + "\tlocus " + tokens[1] + "\t" + tup[1] + "->" + tup[2] + "\n")
 
     inFile.close()
 
