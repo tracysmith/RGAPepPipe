@@ -42,6 +42,8 @@ for n in sys.argv[1:(len(sys.argv) - 1)] :
             # each tuple contains strain name, reference base and snp
             if tokens[4] == ".": #if not a SNP but confident site
                 tokens[4] = tokens[3]
+            elif tokens[4] != "." and tokens[6] == "RGAPepPipeFilter":
+                tokens[4] = "N"
             tup = strain, tokens[3], tokens[4]
             outFile.write(tup[0] + "_" + RGID + "\tlocus " + tokens[1] + "\t" + tup[1] + "->" + tup[2] + "\n")
 
