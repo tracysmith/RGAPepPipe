@@ -57,7 +57,7 @@ for i, line in enumerate(inFile):
                 platform = 'illumina'
             library = entries[libIndex].lower()
             readURL = entries[urlIndex]
-            readSamp = entries[subIndex].split("/")[-1].split(".")[0]
+            readSamp = entries[subIndex].split("/")[-1].split(".")[0].split("_")[0]
             pipelineFile.write('%s\t%s\t%s\t%s\t%s\t%s\n' % (readGroup, 
             sampleID, experimentID, platform, library, readSamp))
             for url in readURL.split(';'):
