@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import sys
+import os
 
 #####################
 # This script takes a variable number of input vcf files.  Each vcf file must contain
@@ -21,7 +22,7 @@ if len(sys.argv) < 3 :
 outFile = open(sys.argv[(len(sys.argv) - 1)], 'w')
 for n in sys.argv[1:(len(sys.argv) - 1)] :
 
-    RGID = n.split("_")[0]
+    RGID = os.path.basename(n).split("_")[0]
 
     inFile = open(n, "r")
 
