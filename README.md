@@ -85,6 +85,12 @@ USAGE:
 
 > FulltoSNP.py [input nexus file] [output file] [threshold value] 
 
+VCFtoFasta.py
+-------------
+This script takes a variable number of input vcf files. Each .vcf file must contain 'confident sites' about one strain. At least one input file must be supplied. The name of the output file(s) will be automatically generated from the sample name in the vcf (SRS or ERS number) plus the identifying information contained in the name of the input file (ideally the RGID). This script is preliminary and has not been extensively tested. Further devolpment should address a minimum size of contigs to be output and how to deal with INDELS.
+
+> VCFtoFasta.py [input vcf file 1] .... [input vcf file n]
+
 enaFileParser.py
 ----------------
 This script converts the text file downloaded from the European Nucleotide Archive for a study and converts it into the input file for SRAtoVCF.py and a list of URLs of fastqs to be downloaded from ENA.

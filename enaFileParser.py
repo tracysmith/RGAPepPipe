@@ -40,6 +40,8 @@ for i, line in enumerate(inFile):
                 libIndex = i
             elif 'fastq_ftp' in entry:
                 urlIndex = i
+            elif 'submitted_ftp' in entry:
+                subIndex = i
         if 100 in [sampIndex, exIndex, rgIndex, platIndex, libIndex, urlIndex]:
             print "Cannot find all headers needed"
             sys.exit(2)
@@ -55,8 +57,9 @@ for i, line in enumerate(inFile):
                 platform = 'illumina'
             library = entries[libIndex].lower()
             readURL = entries[urlIndex]
-            pipelineFile.write('%s\t%s\t%s\t%s\t%s\n' % (readGroup, sampleID, 
-                            experimentID, platform, library))
+            readSamp = entries[subIndex].split("/")[-1].split(".")[0].split("_")[0]
+            pipelineFile.write('%s\t%s\t%s\t%s\t%s\t%s\n' % (readGroup, 
+            sampleID, experimentID, platform, library, readSamp))
             for url in readURL.split(';'):
                 downloadFile.write(url + '\n')
         else:
