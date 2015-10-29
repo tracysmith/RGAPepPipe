@@ -1,0 +1,17 @@
+universe = vanilla
+executable = rga.py
+arguments = "-v -t 4 $(PROCESS)_input.txt /opt/data/mtuberculosis/MtbNCBIH37Rv.fa"
+
+output = RGA.out
+error = RGA.err
+log = RGA.log
+
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+transfer_input_files = $(PROCESS)_input.txt
+
+request_cpus = 4
+request_memory = 4GB
+request_disk = 4GB
+
+queue 10
