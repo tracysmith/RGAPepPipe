@@ -36,7 +36,7 @@ def call_bwa(cmd, filename):
     ret = subprocess.call(shlex.split(cmd), stdout=bwa_out)
     bwa_out.close()
 
-def call_sort_with_log(cmd, cmd2):
+def call_sort(cmd, cmd2):
     cmd = cmd.format(**(kvmap))
     cmd2 = cmd2.format(**(kvmap))
     
@@ -106,8 +106,7 @@ def bwaMEM():
         call_bwa("/opt/PepPrograms/RGAPipeline/bwa mem -M -t {threads} \
 {reference} {pathToFastQ}/{RGID}_1_trimmed.fq", "{RGID}.sam")
         
-    if os.path.exists(RGID+'.sam') == True:
-        sort()
+    sort()
 
 def bwa():
     #Command to map with BWA (<70 bp)
@@ -126,8 +125,7 @@ def bwa():
         call_bwa("/opt/PepPrograms/RGAPipeline/bwa samse {reference} \
 {RGID}.sai {pathToFastQ}/{RGID}_1_trimmed.fq", "{RGID}.sam")
         
-    if os.path.exists(RGID+'.sam') == True:
-        sort()
+    sort()
 
 def sort():
     #Sort with samtools
@@ -180,8 +178,7 @@ TK.jar  -T VariantFiltration -R {reference} -o {RGID}_filter.vcf --variant \
 {RGID}.vcf --filterExpression \"QD < 2.0 || FS > 60.0 || MQ < 40.0 || MQRankSum\
  < -12.5 || ReadPosRankSum < -8.0\" --filterName \"RGAPepPipeFilter\"")
     
-    if os.path.exists(RGID + '_filter.vcf') == True:
-        cleanup()
+    cleanup()
 
 def cleanup():
     #Command to organize folder
@@ -189,10 +186,16 @@ def cleanup():
     files = glob.glob(RGID + ".*");    
     files.extend(glob.glob(RGID + "_?.*"));
     
+    call("mkdir -p {RGID}_output")
+
     for f in files:
-        if not f.endswith(".fastq") or not f.endswith(".realn.bam") or \
-            not f.endswith(".realn.bai"):
+        if f.endswith("_filter.vcf") or f.endswith(".realn.bam") or \
+            f.endswith(".realn.bai"):
+            call("mv {f} ./{RGID}_output".format(f = f))
+        else:
             call("mv {f} ./intermediate_files".format(f = f))
+
+    call("tar -cxvf {RGID}.tar.gz {RGID}_output")
     
     
 def get_args():    
