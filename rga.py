@@ -195,7 +195,7 @@ def cleanup():
         else:
             call("mv {f} ./intermediate_files".format(f = f))
 
-    call("tar -cxvf {RGID}.tar.gz {RGID}_output")
+    call("tar -czvf {RGID}.tar.gz {RGID}_output")
     
     
 def get_args():    
