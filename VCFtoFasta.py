@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 
 import sys
+from Bio import SeqIO
+from Bio.Seq import Seq
+from Bio.SeqRecord import SeqRecord
+from Bio.Alphabet import IUPAC,Gapped
+
 
 #####################
 # This script takes a variable number of input vcf files.  Each vcf file must contain
@@ -19,7 +24,7 @@ if len(sys.argv) < 2 :
     
 def read_vcf(inFile):
     """Create strings corresponding to contigs"""
-    contigs = []
+    #contigs = []
     poscount = 0
     contig = ""
     secondLastLine = None
@@ -43,28 +48,34 @@ def read_vcf(inFile):
                 if int(POS) == (poscount + 1):
                     contig = contig + ALLELE
                 else:
-                    contigs.append(contig)
-                    contig = ALLELE
+                    contig = contig + "-"
+                    #contigs.append(contig)
+                    #contig = ALLELE
                 poscount = int(POS) 
                 secondLastLine = lastLine
                 lastLine = line
-    contigs.append(contig)
-    return(contigs, strain)
+    #contigs.append(contig)
+    return(contig, strain) #contigs to contig
 
-def write_fasta(contigs, strain, RGID):
+def write_fasta(contig, strain, RGID): #contigs to contig
     """Writes a dummy fasta alignment for each vcf"""
     outFile = strain + "_" + RGID + "_RGA.fasta"
+    Sample = strain + "_" + RGID
+    #record = SeqRecord(Seq(contig, Gapped(IUPAC.ambiguous_dna, '-'), id = Sample))
+    #SeqIO.write(record, outFile, "fasta")
     with open(outFile, 'w') as fasta:
-        for i, contig in enumerate(contigs):
-            fasta.write(">contig" + str(i) + '\n')
-            fasta.write(contig + '\n')
+        fasta.write(">" + Sample + '\n')
+        fasta.write(contig + '\n')
+        #for i, contig in enumerate(contigs):
+        #    fasta.write(">contig" + str(i) + '\n')
+        #    fasta.write(contig + '\n')
 
 
                     
 for n in sys.argv[1:(len(sys.argv))] :
     RGID = n.split("_")[0]
-    contigs, strain = read_vcf(n)
-    print("There are {0} contigs for {1}".format(len(contigs), RGID))
-    for i in contigs:
-        print len(i)
-    write_fasta(contigs, strain, RGID)
+    contig, strain = read_vcf(n) #contigs to contig
+#    print("There are {0} contigs for {1}".format(len(contigs), RGID))
+#    for i in contigs:
+#        print len(i)
+    write_fasta(contig, strain, RGID) #contigs to contig
