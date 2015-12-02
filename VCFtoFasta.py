@@ -61,11 +61,11 @@ def write_fasta(contig, strain, RGID): #contigs to contig
     """Writes a dummy fasta alignment for each vcf"""
     outFile = strain + "_" + RGID + "_RGA.fasta"
     Sample = strain + "_" + RGID
-    #record = SeqRecord(Seq(contig, Gapped(IUPAC.ambiguous_dna, '-'), id = Sample))
-    #SeqIO.write(record, outFile, "fasta")
-    with open(outFile, 'w') as fasta:
-        fasta.write(">" + Sample + '\n')
-        fasta.write(contig + '\n')
+    record = SeqRecord(Seq(contig, Gapped(IUPAC.ambiguous_dna, '-')), id=Sample)
+    SeqIO.write(record, outFile, "fasta")
+    #with open(outFile, 'w') as fasta:
+    #    fasta.write(">" + Sample + '\n')
+    #    fasta.write(contig + '\n')
         #for i, contig in enumerate(contigs):
         #    fasta.write(">contig" + str(i) + '\n')
         #    fasta.write(contig + '\n')
