@@ -87,7 +87,7 @@ USAGE:
 
 VCFtoFasta.py
 -------------
-This script takes a variable number of input vcf files. Each .vcf file must contain 'confident sites' about one strain. At least one input file must be supplied. The name of the output file(s) will be automatically generated from the sample name in the vcf (SRS or ERS number) plus the identifying information contained in the name of the input file (ideally the RGID). This script is preliminary and has not been extensively tested. The script has been modified to produce a single contig fasta with gaps ("-"). For the original version that makes a multi-contig fasta look at # lines (new contig for every gap). Further devolpment should address a minimum size of contigs to be output (no longer relevant), how to deal with INDELS, and biopython fasta writing - currently entire sequence is output on one line.
+This script takes a variable number of input vcf files. Each .vcf file must contain 'confident sites' about one strain. At least one input file must be supplied. The name of the output file(s) will be automatically generated from the sample name in the vcf (SRS or ERS number) plus the identifying information contained in the name of the input file (ideally the RGID). This script is preliminary and has not been extensively tested. The script has been modified to produce a single contig fasta with gaps ("-"). For the original version that makes a multi-contig fasta look at # lines (new contig for every gap). Further devolpment should address a minimum size of contigs to be output (no longer relevant) and how to deal with INDELS.
 
 > VCFtoFasta.py [input vcf file 1] .... [input vcf file n]
 
