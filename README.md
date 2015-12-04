@@ -87,9 +87,15 @@ USAGE:
 
 VCFtoFasta.py
 -------------
-This script takes a variable number of input vcf files. Each .vcf file must contain 'confident sites' about one strain. At least one input file must be supplied. The name of the output file(s) will be automatically generated from the sample name in the vcf (SRS or ERS number) plus the identifying information contained in the name of the input file (ideally the RGID). This script is preliminary and has not been extensively tested. The script has been modified to produce a single contig fasta with gaps ("-"). For the original version that makes a multi-contig fasta look at # lines (new contig for every gap). Further devolpment should address a minimum size of contigs to be output (no longer relevant) and how to deal with INDELS.
+This script takes a variable number of input vcf files. Each .vcf file must contain 'confident sites' about one strain. At least one input file must be supplied. The name of the output file(s) will be automatically generated from the sample name in the vcf (SRS or ERS number) plus the identifying information contained in the name of the input file (ideally the RGID). The script hwill produce a single contig (fasta format) with gaps ("-") at any site where there is no information in the VCF. The length and contig of the reference are infereed from the VCF header. 
 
 > VCFtoFasta.py [input vcf file 1] .... [input vcf file n]
+
+VCFtoContigs.py
+-------------
+This script takes a variable number of input vcf files. Each .vcf file must contain 'confident sites' about one strain. At least one input file must be supplied. The name of the output file(s) will be automatically generated from the sample name in the vcf (SRS or ERS number) plus the identifying information contained in the name of the input file (ideally the RGID). This script generates a multi-contig fasta, where each site with missing info starts a new contig. Further devolpment should address a minimum size of contigs to be output, how to deal with INDELS, and writing the output fasta with BioPython. THIS SCRIPT HAS NOT BEEN TESTED SINCE MODIFICATIONS WERE MADE - USE WITH EXTREME CAUTION.
+
+> VCFtoContigs.py [input vcf file 1] .... [input vcf file n]
 
 enaFileParser.py
 ----------------
