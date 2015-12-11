@@ -1,0 +1,18 @@
+universe = vanilla
+executable = /opt/PepPrograms/bwa-0.7.12/bwa
+arguments = "mem -M -t 8 $(REF) $(RUN)_1_val_1.fq $(RUN)_2_val_2.fq"
+
+output = $(RUN).sam
+error = bwa_$(RUN).err
+log = bwa_$(RUN).log
+
+transfer_executable = FALSE
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+transfer_input_files = $(RUN)_1_val_1.fq,$(RUN)_2_val_2.fq
+
+request_cpus = 8
+request_memory = 2GB
+request_disk = 2GB
+
+queue

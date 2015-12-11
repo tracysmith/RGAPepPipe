@@ -1,0 +1,17 @@
+universe = vanilla
+executable = fastq_dump.sh
+arguments = "$(RUN)"
+
+output = fastq-dump_$(RUN).out
+error = fastq-dump_$(RUN).err
+log = fastq-dump_$(RUN).log
+
+transfer_executable = TRUE
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+
+request_cpus = 1
+request_memory = 2GB
+request_disk = 2GB
+
+queue
