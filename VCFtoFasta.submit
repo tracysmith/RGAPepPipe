@@ -1,0 +1,17 @@
+universe = vanilla
+executable = VCFtoFasta.py
+arguments = "$(sample)_filter.vcf"
+
+output = VCFtoFasta.out
+error = VCFtoFasta.err
+log = VCFtoFasta.log
+
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+transfer_input_files = $(sample)_filtered.vcf
+
+request_cpus = 1
+request_memory = 1GB
+request_disk = 1GB
+
+queue
