@@ -19,7 +19,7 @@ OutFileName = sys.argv[2]
 threshold = sys.argv[3]
 PosOutFileName = sys.argv[2]+'positions'
 
-record_dict = SeqIO.to_dict(SeqIO.parse(InFileName,"nexus"))
+record_dict = SeqIO.to_dict(SeqIO.parse(InFileName,"fasta"))
 
 #seperate speciesnames from sequences
 seqs = []
