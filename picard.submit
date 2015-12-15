@@ -1,0 +1,17 @@
+universe = vanilla
+executable = picard.sh
+arguments = "$(RUN) $(LIBRARY) $(PLATFORM) $(SAMPLE)"
+
+output = picard_$(RUN).out
+error = picard_$(RUN).err
+log = picard_$(RUN).log
+
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+transfer_input_files = $(RUN).sort.bam
+
+request_cpus = 1
+request_memory = 2GB
+request_disk = 2GB
+
+queue

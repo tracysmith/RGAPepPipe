@@ -1,0 +1,17 @@
+universe = vanilla
+executable = gatk.sh
+arguments = "$(RUN) $(REF)"
+
+output = gatk_$(RUN).out
+error = gatk_$(RUN).err
+log = gatk_$(RUN).log
+
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+transfer_input_files = $(RUN).ready.bam, $(RUN).ready.bai
+
+request_cpus = 1
+request_memory = 2GB
+request_disk = 2GB
+
+queue

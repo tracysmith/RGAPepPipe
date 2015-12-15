@@ -1,0 +1,18 @@
+universe = vanilla
+executable = /opt/PepPrograms/samtools-1.2/samtools
+arguments = "view -bhSu $(RUN).sam"
+
+output = $(RUN).bam
+error = samtools_view_$(RUN).err
+log = samtools_view_$(RUN).log
+
+transfer_executable = FALSE
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+transfer_input_files = $(RUN).sam
+
+request_cpus = 1
+request_memory = 2GB
+request_disk = 2GB
+
+queue
