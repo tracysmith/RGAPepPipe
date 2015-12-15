@@ -35,7 +35,7 @@ to the chosen starting program for this option to work)")
 
 args = get_args()
 
-with open("rga_submit.template", "r") as template_file:
+with open("rga_dag.template", "r") as template_file:
     template = Template(template_file.read())
 
 with open(args.input, 'r') as infile:
