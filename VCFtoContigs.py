@@ -56,13 +56,12 @@ def write_fasta(contigs, strain, RGID):
     outFile = strain + "_" + RGID + "_RGA.fasta"
     with open(outFile, 'w') as fasta:
         for i, contig in enumerate(contigs):
-            fasta.write(">contig" + str(i) + '\n')
-            fasta.write(contig + '\n')
+            if len(contig) >= 50:
+                fasta.write(">contig" + str(i) + '\n')
+                fasta.write(contig + '\n')
                     
 for n in sys.argv[1:(len(sys.argv))] :
     RGID = n.split("_")[0]
     contigs, strain = read_vcf(n)
     print("There are {0} contigs for {1}".format(len(contigs), RGID))
-    for i in contigs:
-        print len(i)
     write_fasta(contigs, strain, RGID)
