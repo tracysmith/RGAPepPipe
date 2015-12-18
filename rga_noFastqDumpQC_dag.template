@@ -1,0 +1,42 @@
+JOB trim trim.submit
+VARS trim RUN="${run}"
+
+JOB bwa bwaMEM.submit
+VARS bwa RUN="${run}"
+VARS bwa REF="${ref}"
+
+JOB view samtools_view.submit
+VARS view RUN="${run}"
+
+JOB sort samtools_sort.submit
+VARS sort RUN="${run}"
+
+JOB picard picard.submit
+VARS picard RUN="${run}"
+VARS picard LIBRARY="${lib}"
+VARS picard PLATFORM="${platform}"
+VARS picard SAMPLE="${sample}"
+
+JOB gatk gatk.submit
+VARS gatk RUN="${run}"
+VARS gatk REF="${ref}"
+
+JOB vcf vcf.submit
+VARS vcf RUN="${run}"
+VARS vcf REF="${ref}"
+
+JOB filter filter.submit
+VARS filter RUN="${run}"
+VARS filter REF="${ref}"
+
+JOB fasta fasta.submit
+VARS fasta RUN="${run}"
+
+PARENT trim CHILD bwa
+PARENT bwa CHILD view
+PARENT view CHILD sort
+PARENT sort CHILD picard
+PARENT picard CHILD gatk
+PARENT gatk CHILD vcf
+PARENT vcf CHILD filter
+PARENT filter CHILD fasta
