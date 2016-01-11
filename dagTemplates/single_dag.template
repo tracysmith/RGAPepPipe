@@ -2,14 +2,14 @@ JOB fastq_dump fastq_dump.submit
 VARS fastq_dump RUN="${run}"
 SCRIPT POST fastq_dump check1Outputs.sh ${run}_1.fastq 10M
 
-JOB fastqc fastqc.submit
+JOB fastqc fastqc_single.submit
 VARS fastqc RUN="${run}"
 
-JOB trim trim.submit
+JOB trim trim_single.submit
 VARS trim RUN="${run}"
 SCRIPT POST trim check1Outputs.sh ${run}_1_val_1.fq 10M
 
-JOB bwa bwaMEM.submit
+JOB bwa bwaMEM_single.submit
 VARS bwa RUN="${run}"
 VARS bwa REF="${ref}"
 SCRIPT POST bwa checkOutput_removeIntermediates.sh ${run}.sam 10M ${run}_1.fastq
