@@ -15,27 +15,13 @@ def get_args():
 guided assembly')
     parser.add_argument("input", help="File describing read data information")
     parser.add_argument("reference", help="Fasta file of reference genome")
-    parser.add_argument("-p", "--program", default="fastq_dump",
-        help="program to start executing at: fastq_dump, fastqc, trim_galore, \
-bwa (for longer reads), bwashort (for shorter reads), sort, dedup, readgroups, \
-realign, vcf, cleanup [default: fastq_dump] (You must have run the pipeline up \
-to the chosen starting program for this option to work)")
-    parser.add_argument("-v", "--verbose", action="store_true", 
-        help="Runs program in verbose mode which enables all debug output.")
-    parser.add_argument("--ena", action="store_true", 
-        help="Skips fastq_dump for every file.")
-    parser.add_argument("-d","--fastqdir", default=".", 
-        help="Specify a directory that contains .fastq files.")
-    parser.add_argument("-t","--threads", type=int, default = 6,
-        help="Specify the number of threads that should be used.")
-    parser.add_argument("-s","--skip", action="store_true", 
-        help="Continue even if errors occur.")
+    parser.add_argument("dagtemplate", help="dag template")
 
     return parser.parse_args()
 
 args = get_args()
 
-with open("rga_dag.template", "r") as template_file:
+with open(args.dagtemplate, "r") as template_file:
     template = Template(template_file.read())
 
 with open(args.input, 'r') as infile:
@@ -47,8 +33,8 @@ with open(args.input, 'r') as infile:
         variableMap['run'] = inputList[0]
         variableMap['sample'] = inputList[1]
         variableMap['lib'] = inputList[2]
-        variableMap['platform'] = inputList[3]
-        pair = inputList[4]
+        variableMap['platform'] = inputList[3].lower()
+        pair = inputList[4].lower()
         with open("{0}_rga.dag".format(variableMap['run']), "w") as dagfile:
             out = template.substitute(variableMap)
             dagfile.write(out)
