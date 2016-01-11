@@ -1,14 +1,3 @@
-JOB fastq_dump fastq_dump.submit
-VARS fastq_dump RUN="${run}"
-SCRIPT POST fastq_dump check1Outputs.sh ${run}_1.fastq 10M
-
-JOB fastqc fastqc_single.submit
-VARS fastqc RUN="${run}"
-
-JOB trim trim_single.submit
-VARS trim RUN="${run}"
-SCRIPT POST trim check1Outputs.sh ${run}_1_trimmed.fq 10M
-
 JOB bwa bwaMEM_single.submit
 VARS bwa RUN="${run}"
 VARS bwa REF="${ref}"
@@ -48,8 +37,6 @@ JOB fasta fasta.submit
 VARS fasta RUN="${run}"
 SCRIPT POST fasta checkOutput_removeIntermediates.sh ${sample}_${run}_RGA.fasta 1M ${run}.vcf ${run}.vcf.idx
 
-PARENT fastq_dump CHILD fastqc trim
-PARENT trim CHILD bwa
 PARENT bwa CHILD view
 PARENT view CHILD sort
 PARENT sort CHILD picard
