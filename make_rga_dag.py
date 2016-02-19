@@ -25,19 +25,19 @@ with open(args.dagtemplate, "r") as template_file:
     template = Template(template_file.read())
 
 with open(args.input, 'r') as infile:
-    for line in infile:
-        line = line.strip()
-        inputList = line.split()
-        variableMap = {}
-        variableMap['ref'] = args.reference
-        variableMap['run'] = inputList[0]
-        variableMap['sample'] = inputList[1]
-        variableMap['lib'] = inputList[2]
-        variableMap['platform'] = inputList[3].lower()
-        pair = inputList[4].lower()
-        with open("{0}_rga.dag".format(variableMap['run']), "w") as dagfile:
-            out = template.substitute(variableMap)
-            dagfile.write(out)
-
-    
-
+    outfileName = args.input.split(".")[0] + "_toplevel.dag"
+    with open(outfileName, "w") as outfile:
+        for line in infile:
+            line = line.strip()
+            inputList = line.split()
+            variableMap = {}
+            variableMap['ref'] = args.reference
+            variableMap['run'] = inputList[0]
+            variableMap['sample'] = inputList[1]
+            variableMap['lib'] = inputList[2]
+            variableMap['platform'] = inputList[3].lower()
+            pair = inputList[4].lower()
+            with open("{0}_rga.dag".format(variableMap['run']), "w") as dagfile:
+                out = template.substitute(variableMap)
+                dagfile.write(out)
+            outfile.write("SPLICE {0} {0}_rga.dag\n".format(variableMap['run']))
