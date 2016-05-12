@@ -39,6 +39,9 @@ VARS vcf RUN="${run}"
 VARS vcf REF="${ref}"
 SCRIPT POST vcf checkOutput_removeIntermediates.sh ${run}.vcf 10M ${run}.dedup.bam
 
+JOB bamqc bamqc.submit
+VARS bamqc RUN="${run}"
+
 JOB filter filter.submit
 VARS filter RUN="${run}"
 VARS filter REF="${ref}"
@@ -54,6 +57,6 @@ PARENT bwa CHILD view
 PARENT view CHILD sort
 PARENT sort CHILD picard
 PARENT picard CHILD gatk
-PARENT gatk CHILD vcf
+PARENT gatk CHILD vcf bamqc
 PARENT vcf CHILD filter
 PARENT filter CHILD fasta
