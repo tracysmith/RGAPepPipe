@@ -57,6 +57,6 @@ PARENT bwa CHILD view
 PARENT view CHILD sort
 PARENT sort CHILD picard
 PARENT picard CHILD gatk
-PARENT gatk CHILD vcf bamqc
-PARENT vcf CHILD filter
+PARENT gatk CHILD vcf
+PARENT vcf CHILD filter bamqc
 PARENT filter CHILD fasta
