@@ -32,7 +32,7 @@ SCRIPT POST picard checkOutput_removeIntermediates.sh ${run}.ready.bam 10M ${run
 JOB gatk gatk.submit
 VARS gatk RUN="${run}"
 VARS gatk REF="${ref}"
-SCRIPT POST gatk checkOutput_removeIntermediates.sh ${run}.realn.bam 10M ${run}.sort.bam
+SCRIPT POST gatk checkOutput_removeIntermediates.sh ${run}.realn.bam 10M ${run}.sort.bam ${run}.dedup.bam ${run}.ready.bam ${run}.ready.bai
 
 JOB bamqc bamqc.submit
 VARS bamqc RUN="${run}"
