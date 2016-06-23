@@ -48,18 +48,18 @@ def usage():
 def realign(inputList, pat):
     """Run realign for all samples of a patient"""
 #    print("Processing sample " + pat)
-    call('java -Xmx4g -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -R /home/mrood/refs/ref.v3/MtbNCBIH37Rv.fa -T RealignerTargetCreator -I ' + " -I ".join(inputList) + ' -o {pat}.intervals'.format(pat=pat), shell=True)
-    call('java -Xmx4g -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -R /home/mrood/refs/ref.v3/MtbNCBIH37Rv.fa -T IndelRealigner -I ' + " -I ".join(inputList) + ' -targetIntervals {pat}.intervals -nWayOut .patrealn.bam'.format(pat=pat), shell=True)
+    call('java -Xmx4g -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -R /opt/data/mtuberculosis/MtbNCBIH37Rv.fa -T RealignerTargetCreator -I ' + " -I ".join(inputList) + ' -o {pat}.intervals'.format(pat=pat), shell=True)
+    call('java -Xmx4g -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -R /opt/data/mtuberculosis/MtbNCBIH37Rv.fa -T IndelRealigner -I ' + " -I ".join(inputList) + ' -targetIntervals {pat}.intervals -nWayOut .patrealn.bam'.format(pat=pat), shell=True)
 
 def callable_loci(samp):
     """Run callable loci on samples"""
-    call('java -Xmx4g -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -T CallableLoci -I {samp}.patrealn.bam -summary {samp}_defaults.summary -o {samp}_defaults.bed -R /home/mrood/refs/ref.v3/MtbNCBIH37Rv.fa'.format(samp=samp), shell=True)
-    call('java -Xmx4g -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -T CallableLoci -I {samp}.patrealn.bam -summary {samp}_strict.summary -o {samp}_strict.bed -R /home/mrood/refs/ref.v3/MtbNCBIH37Rv.fa -frlmq 0.04 -mmq 20'.format(samp=samp), shell=True)
+    call('java -Xmx4g -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -T CallableLoci -I {samp}.realn.patrealn.bam -summary {samp}_defaults.summary -o {samp}_defaults.bed -R /opt/data/mtuberculosis/MtbNCBIH37Rv.fa'.format(samp=samp), shell=True)
+    call('java -Xmx4g -jar /opt/PepPrograms/RGAPipeline/GenomeAnalysisTK.jar -T CallableLoci -I {samp}.realn.patrealn.bam -summary {samp}_strict.summary -o {samp}_strict.bed -R /opt/data/mtuberculosis/MtbNCBIH37Rv.fa -frlmq 0.04 -mmq 20'.format(samp=samp), shell=True)
 
 def ind_mpileup(samp):
     """Make mpileup for individual samples"""
-    call('/opt/PepPrograms/RGAPipeline/samtools mpileup -B -q 20 -s -O -l /home/mrood/WH-BH/remReg/150424_includeRegions.bed -f /home/mrood/refs/ref.v3/MtbNCBIH37Rv.fa {samp}.realn.patrealn.bam > {samp}_Q20.pileup'.format(samp=samp), shell=True)
-#    call('/opt/PepPrograms/RGAPipeline/samtools mpileup -B -u -v -S -q 20 -Q 20 -f /home/mrood/refs/ref.v3/MtbNCBIH37Rv.fa {samp}.realn.patrealn.bam > {samp}'.format(samp=samp), shell=True)
+    call('/opt/PepPrograms/RGAPipeline/samtools mpileup -B -q 20 -s -O -f /opt/data/mtuberculosis/MtbNCBIH37Rv.fa {samp}.realn.patrealn.bam > {samp}_Q20.pileup'.format(samp=samp), shell=True)
+#    call('/opt/PepPrograms/RGAPipeline/samtools mpileup -B -u -v -S -q 20 -Q 20 -f /opt/data/mtuberculosis/MtbNCBIH37Rv.fa {samp}.realn.patrealn.bam > {samp}'.format(samp=samp), shell=True)
 
 def rem_indels(samp):
     """Remove indels"""
@@ -70,8 +70,8 @@ def pat_mpileup(inputList, pat):
     """Make mpileup for patient"""
     print("Processing patient " + pat)
     print(" ".join(inputList))
-#    call('/opt/PepPrograms/RGAPipeline/samtools mpileup -B -f /home/mrood/refs/ref.v3/MtbNCBIH37Rv.fa -q 20 -Q 20 ' + " ".join(inputList) + ' > {pat}.mpileup'.format(pat=pat), shell=True)
-    call('/opt/PepPrograms/RGAPipeline/samtools mpileup -B -q 20 -l /home/mrood/WH-BH/remReg/150424_includeRegions.bed -f /home/mrood/refs/ref.v3/MtbNCBIH37Rv.fa ' + " ".join(inputList) + ' > {pat}.mpileup'.format(pat=pat), shell=True)
+#    call('/opt/PepPrograms/RGAPipeline/samtools mpileup -B -f /opt/data/mtuberculosis/MtbNCBIH37Rv.fa -q 20 -Q 20 ' + " ".join(inputList) + ' > {pat}.mpileup'.format(pat=pat), shell=True)
+    call('/opt/PepPrograms/RGAPipeline/samtools mpileup -B -q 20 -f /opt/data/mtuberculosis/MtbNCBIH37Rv.fa ' + " ".join(inputList) + ' > {pat}.mpileup'.format(pat=pat), shell=True)
 
 def rem_indels_mpileup(pat):
     """Remove indels"""
@@ -88,7 +88,7 @@ def get_RG(inFileName):
     patDict = {}
     with open(inFileName, 'r') as inFile:
         for line in inFile:
-            RGID,RGSM,RGLB,RGPL,pair,patient=line.strip().split('\t')
+            RGID,RGSM,RGLB,RGPL,pair,patient=line.strip().split()
             if patient in patDict:
                 patDict[patient].append(RGID)
             else:
@@ -110,7 +110,7 @@ for pat in patDict:
         inputRealnList.append(realn)
         inputMpileupList.append(patrealn)
     if args.mpileup is True:
-        #realign(inputRealnList, pat)
+        realign(inputRealnList, pat)
         pat_mpileup(inputMpileupList, pat)   
         rem_indels_mpileup(pat)
         pat_sync(pat)
