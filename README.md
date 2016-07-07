@@ -3,26 +3,10 @@ RGAPepPipe
 
 Reference Guided Assembly Pepperell Lab Pipeline
 
-File Descriptions
-==================
-SRAtoVCF.py
-------------
-This script takes a list of SRA filenames (w/o .sra extension) and outputs a VCF file for each. For each sample, a tab-delimited .txt file is required containing:
+This pipeline utilizes the HTCondor job management system. For more information: https://research.cs.wisc.edu/htcondor/
 
-> SRAReadGroupID	SampleGroupID	LibraryID	SeqPlatform	paired/single
-
-For example:
-
-> ERR07108	ERS088906	ERX048850	illumina	paired
-
-The script must be run from a folder with downloaded .sra files. The path to the indexed reference .fa file must also be provided.
-
-When running the script, type:
-> python [path to SRAtoVCF.py] [path to .txt file] [.fasta reference file] [options]
-
-For other available command line options run "python SRAtoVCF.py -h"
-
-####Necessary programs required to run script:
+Necessary programs required to run pipeline:
+============================================
 
 fastq-dump
   * part of the SRAtoolkit software package available from NCBI
@@ -59,7 +43,96 @@ GATK (genome analysis toolkit)
   * we use version 3.4.46
   * locally realigns reads and produces VCF  
 
+Qualimap
+* available from http://qualimap.bioinfo.cipf.es/
+* we use version 2.1.1
+* performs quality assessment of mapped reads
+
 Java 7 must also be installed. 
+
+To Run Pipeline
+==================
+
+Create input file for pipeline containing run information:
+
+Example:
+```
+ERR07108	ERS088906	ERX048850	illumina	paired
+```
+If fastqs will be downloaded, this step can be skipped. Create symbolic links of fastqs in submit directory. Paired end fastqs should end with _1.fastq and _2. fastq. 
+
+Example snippet from IPython:
+```
+#uncompress files
+g_zipped = !ls /opt/data/gvaginalis_g_vag_illumina_June-2016/*.fastq
+for g in g_zipped:
+	!gunzip {g}
+​
+#create symbolic links
+#note that the [6] below may need to be changed depending on how many directories are between your fastqs and /opt
+files = !ls /opt/data/gvaginalis/g_vag_illumina_June-2016/*.fastq
+for f in files:
+    name = f.split("/")[6].split("_")[0]
+    number = f.split("/")[6].split("_")[3][1]
+    !ln -s {f} {name}_{number}.fastq
+```
+
+Use make_rga_dag.py to create DAG. DAG templates can be found in dagTemplates/. rga_dag.template is generally the most up to date with pipeline improvements. Edit the DAG template to run the programs you need (e.g. remove fastq-dump if fastqs are available locally).
+
+Usage:
+> make_rga_dag.py [-h] input reference dagtemplate
+
+Copy all files from toRunPipeline/ to submit directory
+
+Submit _toplevel.dag
+> condor_submit_dag dag_file
+
+
+
+Other Scripts
+===================
+
+enaFileParser.py
+----------------
+This script converts the text file downloaded from the European Nucleotide Archive for a study and converts it into the input file for SRAtoVCF.py and a list of URLs of fastqs to be downloaded from ENA.
+
+Usage:
+
+> enaFileParser.py [input ENA text file]
+
+get_url.py
+---------
+This script takes as input the ERPXXXXXX_download.txt file output by the enaFileParser.py and runs wget to download the fastq files. A '-t' flag allows the user to specify the number of threads.
+
+FulltoSNP.py
+------------
+Takes the nexus file generated in SNPTableToNexus.py and performs a SNP alignment. Output file should be in .nex format. User must also input a threshold value (between 0 and 1) . The threshold determines the number of sequences with an ambiguous base at a certain position and rejects base position if the percentage of ambiguous bases is greater than the threshold.  
+USAGE:
+
+> FulltoSNP.py [input nexus file] [output file] [threshold value] 
+
+
+Old Pipeline
+===================
+
+SRAtoVCF.py
+------------
+This script takes a list of SRA filenames (w/o .sra extension) and outputs a VCF file for each. For each sample, a tab-delimited .txt file is required containing:
+
+> SRAReadGroupID	SampleGroupID	LibraryID	SeqPlatform	paired/single
+
+For example:
+
+> ERR07108	ERS088906	ERX048850	illumina	paired
+
+The script must be run from a folder with downloaded .sra files. The path to the indexed reference .fa file must also be provided.
+
+When running the script, type:
+> python [path to SRAtoVCF.py] [path to .txt file] [.fasta reference file] [options]
+
+For other available command line options run "python SRAtoVCF.py -h"
+
+
 
 VCFsToSnpTable.py
 -----------------
@@ -78,12 +151,6 @@ Usage:
 
 > SNPTableToNexus.py [input file] [outputfile] [reference sequence .fa file]
 
-FulltoSNP.py
-------------
-Takes the nexus file generated in SNPTableToNexus.py and performs a SNP alignment. Output file should be in .nex format. User must also input a threshold value (between 0 and 1) . The threshold determines the number of sequences with an ambiguous base at a certain position and rejects base position if the percentage of ambiguous bases is greater than the threshold.  
-USAGE:
-
-> FulltoSNP.py [input nexus file] [output file] [threshold value] 
 
 VCFtoFasta.py
 -------------
@@ -97,17 +164,6 @@ This script takes a variable number of input vcf files. Each .vcf file must cont
 
 > VCFtoContigs.py [input vcf file 1] .... [input vcf file n]
 
-enaFileParser.py
-----------------
-This script converts the text file downloaded from the European Nucleotide Archive for a study and converts it into the input file for SRAtoVCF.py and a list of URLs of fastqs to be downloaded from ENA.
-
-Usage:
-
-> enaFileParser.py [input ENA text file]
-
-get_url.py
----------
-This script takes as input the ERPXXXXXX_download.txt file output by the enaFileParser.py and runs wget to download the fastq files. A '-t' flag allows the user to specify the number of threads.
 
 Example
 --------
