@@ -1,0 +1,18 @@
+universe = vanilla
+executable = /opt/PepPrograms/popoolation2_1201/mpileup2sync.jar
+arguments = "--input ERR867518_Q20.mpileup --output ERR867518_Q20.sync --fastq-type sanger --min-qual 20"
+
+output = ERR867518_Q20.sync
+error = sync_ERR867518.err
+log = sync_ERR867518.log
+
+transfer_executable = TRUE
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+transfer_input_files = ERR867518_Q20.mpileup
+
+request_cpus = 1
+request_memory = 1GB
+request_disk = 2GB
+
+queue

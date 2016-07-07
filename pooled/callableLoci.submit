@@ -1,0 +1,17 @@
+universe = vanilla
+executable = callableLoci.sh
+arguments = "ERR867518.realn.patrealn.bam /opt/data/mtuberculosis/MtbNCBIH37Rv.fa"
+
+output = callableLoci_ERR867518.out
+error = callableLoci_ERR867518.err
+log = callableLoci_ERR867518.log
+
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+transfer_input_files = ERR867518.realn.patrealn.bam, ERR867518.realn.patrealn.bai
+
+request_cpus = 1
+request_memory = 2GB
+request_disk = 2GB
+
+queue
