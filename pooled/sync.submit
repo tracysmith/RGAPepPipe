@@ -1,6 +1,6 @@
 universe = vanilla
-executable = /opt/PepPrograms/popoolation2_1201/mpileup2sync.jar
-arguments = "--input ERR867518_Q20.mpileup --output ERR867518_Q20.sync --fastq-type sanger --min-qual 20"
+executable = sync.sh
+arguments = "ERR867518_Q20.mpileup"
 
 output = ERR867518_Q20.sync
 error = sync_ERR867518.err
