@@ -52,7 +52,7 @@ def read_vcf(inFile):
                             ALLELE = "-"
                     else:
                         if FILTER == "LowCov":
-                            continue
+                            ALLELE = "?"
                         else:
                             print(FILTER)
                 index = int(POS) - 1
