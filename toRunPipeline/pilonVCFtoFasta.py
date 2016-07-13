@@ -67,6 +67,6 @@ def write_fasta(chromosome, RGID, refID):
     SeqIO.write(record, outFile, "fasta")
 
 for n in sys.argv[1:(len(sys.argv))] :
-    RGID = os.path.basename(n).split("_")[0]
+    RGID = os.path.basename(n)[0:-4]
     chromosome, refID = read_vcf(n)
     write_fasta(chromosome, RGID, refID)
