@@ -1,0 +1,21 @@
+JOB realign realign.submit
+VARS realign REF="${ref}"
+VARS realign PAT="${pat}"
+VARS realign INPUTS1="${inputs1}"
+VARS realign TRANS1="${trans1}"
+
+JOB mpileup mpileup.submit
+VARS mpileup INPUTS2="${inputs2}"
+VARS mpileup REF="${ref}"
+VARS mpileup PAT="${pat}"
+VARS mpileup TRANS2="${trans2}"
+
+JOB remMpileup remMpileup.submit
+VARS remMpileup PAT="${pat}"
+
+JOB sync sync.submit
+VARS sync PAT="${pat}"
+
+parent realign child mpileup
+parent mpileup child remMpileup
+parent remMpileup child sync
