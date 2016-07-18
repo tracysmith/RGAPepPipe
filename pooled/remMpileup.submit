@@ -1,14 +1,14 @@
 universe = vanilla
 executable = remMpileup.sh
-arguments = "ERR867518_Q20.mpileup"
+arguments = "$(PAT)"
 
-output = remMpileup_ERR867518.out
-error = remMpileup_ERR867518.err
-log = remMpileup_ERR867518.log
+output = remMpileup_$(PAT).out
+error = remMpileup_$(PAT).err
+log = remMpileup_$(PAT).log
 
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
-transfer_input_files = ERR867518_Q20.mpileup
+transfer_input_files = $(PAT)_Q20_q20.mpileup
 
 request_cpus = 1
 request_memory = 2GB

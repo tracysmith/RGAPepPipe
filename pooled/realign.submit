@@ -1,14 +1,14 @@
 universe = vanilla
 executable = realign.sh
-arguments = "ERR867518.realn.bam /opt/data/mtuberculosis/MtbNCBIH37Rv.fa"
+arguments = "$(REF) $(PAT) $(INPUTS1)"
 
-output = realign_ERR867518.out
-error = realign_ERR867518.err
-log = realign_ERR867518.log
+output = realign_$(PAT).out
+error = realign_$(PAT).err
+log = realign_$(PAT).log
 
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
-transfer_input_files = ERR867518.realn.bam, ERR867518.realn.bai
+transfer_input_files = $(TRANS1)
 
 request_cpus = 1
 request_memory = 2GB

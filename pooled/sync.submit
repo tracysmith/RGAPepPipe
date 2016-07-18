@@ -1,15 +1,15 @@
 universe = vanilla
 executable = sync.sh
-arguments = "ERR867518_Q20.mpileup"
+arguments = "$(PAT)"
 
-output = ERR867518_Q20.sync
-error = sync_ERR867518.err
-log = sync_ERR867518.log
+output = sync_$(PAT).sync
+error = sync_$(PAT).err
+log = sync_$(PAT).log
 
 transfer_executable = TRUE
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
-transfer_input_files = ERR867518_Q20.mpileup
+transfer_input_files = $(PAT).noIndel.mpileup
 
 request_cpus = 1
 request_memory = 1GB

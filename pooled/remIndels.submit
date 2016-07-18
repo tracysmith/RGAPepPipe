@@ -1,14 +1,14 @@
 universe = vanilla
 executable = remIndels.sh
-arguments = "ERR867518_Q20.pileup"
+arguments = "$(RUN)"
 
-output = remIndels_ERR867518.out
-error = remIndels_ERR867518.err
-log = remIndels_ERR867518.log
+output = remIndels_$(RUN).out
+error = remIndels_$(RUN).err
+log = remIndels_$(RUN).log
 
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
-transfer_input_files = ERR867518_Q20.pileup
+transfer_input_files = $(RUN).mpileup
 
 request_cpus = 1
 request_memory = 2GB

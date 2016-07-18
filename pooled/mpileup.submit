@@ -1,15 +1,15 @@
 universe = vanilla
 executable = /opt/PepPrograms/RGAPipeline/samtools
-arguments = "mpileup -B -q 20 -f /opt/data/mtuberculosis/MtbNCBIH37Rv.fa ERR867518.realn.bam"
+arguments = "mpileup -B -q 20 -Q 20 -f $(REF) $(INPUTS2)"
 
-output = ERR867518_Q20.mpileup
-error = mpileup_ERR867518.err
-log = mpileup_ERR867518.log
+output = $(PAT)_Q20_q20.mpileup
+error = mpileup_$(PAT).err
+log = mpileup_$(PAT).log
 
 transfer_executable = FALSE
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
-transfer_input_files = ERR867518.realn.bam, ERR867518.realn.bai
+transfer_input_files = $(TRANS2)
 
 request_cpus = 1
 request_memory = 1GB

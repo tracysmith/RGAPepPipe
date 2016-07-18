@@ -1,14 +1,15 @@
 universe = vanilla
 executable = /opt/PepPrograms/RGAPipeline/samtools
-arguments = "mpileup -B -q 20 -s -O -f /opt/data/mtuberculosis/MtbNCBIH37Rv.fa /opt/data/Brown_etal/bams/$(RUN).realn.bam > $(RUN)_Q20.pileup"
+arguments = "mpileup -B -q 20 -Q 20 -s -O -f $(REF) $(RUN).realn.patrealn.bam"
 
-output = pileup_$(RUN).out
+output = $(RUN).mpileup
 error = pileup_$(RUN).err
 log = pileup_$(RUN).log
 
 transfer_executable = FALSE
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
+transfer_input_files = $(RUN).realn.patrealn.bam, $(RUN).realn.patrealn.bai
 
 request_cpus = 1
 request_memory = 1GB
