@@ -1,0 +1,9 @@
+JOB ${run}_pileup pileup_pataware.submit
+VARS ${run}_pileup REF="${ref}"
+VARS ${run}_pileup RUN="${run}"
+
+JOB ${run}_remIndels remIndels.submit
+VARS ${run}_remIndels RUN="${run}"
+
+parent realign child ${run}_pileup
+parent ${run}_pileup child ${run}_remIndels

@@ -1,0 +1,8 @@
+JOB ${run}_pileup pileup.submit
+VARS ${run}_pileup REF="${ref}"
+VARS ${run}_pileup RUN="${run}"
+
+JOB ${run}_remIndels remIndels.submit
+VARS ${run}_remIndels RUN="${run}"
+
+parent ${run}_pileup child ${run}_remIndels
