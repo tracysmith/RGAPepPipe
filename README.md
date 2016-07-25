@@ -48,6 +48,16 @@ Qualimap
 * we use version 2.1.1
 * performs quality assessment of mapped reads
 
+Popoolation (pool-seq only)
+* available from https://sourceforge.net/p/popoolation/wiki/Main/
+* we use version 1.2.2
+* identifies and removes indels
+
+Popoolation2 (pool-seq only)
+* available from https://sourceforge.net/p/popoolation2/wiki/Main/
+* we use version 1201
+* converts mpileup to sync file
+
 Java 7 must also be installed. 
 
 To Run Pipeline
@@ -88,6 +98,27 @@ Submit _toplevel.dag
 > condor_submit_dag dag_file
 
 
+To Run Pool-Seq Pipeline
+==========================
+
+Run the regular pipeline for all samples (instructions above) through the GATK realignment step (modify dag template as necessary). Then proceed with 'part 2'.
+
+For part2, you need to have an additional column in your pipeline input file for 'patient'. All samples from the same patient/experiment/culture/etc will be processed together. (Note that it is okay to have a single sample for a patient.) 
+
+Example:
+```
+ERR07108	ERS088906	ERX048850	illumina	paired	patA
+ERR07109	ERS088907	ERX048850	illumina	paired	patA
+```
+
+Use the pooled/make_pooled_dag.py to create DAGs for each patient. 
+
+Usage:
+> pooled/make_pooled_dag.py [-h] input reference poolseq_templates-folder-path
+
+Copy all *submit and *sh files from pooled/ to submit directory.
+
+Submit DAGs.
 
 Other Scripts
 ===================
