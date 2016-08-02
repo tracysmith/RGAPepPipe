@@ -18,5 +18,4 @@ JOB sync sync.submit
 VARS sync PAT="${pat}"
 
 parent realign child mpileup
-parent mpileup ${indels} child remMpileup
 parent remMpileup child sync

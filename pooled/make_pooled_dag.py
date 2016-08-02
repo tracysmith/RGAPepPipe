@@ -80,6 +80,7 @@ for pat in patDict:
                     template = Template(template_file.read())
                     out = template.substitute(variableMap)
                     dagfile.write(out)
+            dagfile.write("parent mpileup {0} child remMpileup".format(" ".join(indelsGtfList)))
     else:
         print("There is {0} samples for patient {1}".format(len(patDict[pat]), pat))
         run = patDict[pat][0]
