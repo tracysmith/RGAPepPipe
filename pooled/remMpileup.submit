@@ -1,6 +1,6 @@
 universe = vanilla
 executable = remMpileup.sh
-arguments = "$(PAT)"
+arguments = "$(PAT) $(INDELS)"
 
 output = remMpileup_$(PAT).out
 error = remMpileup_$(PAT).err
@@ -8,7 +8,7 @@ log = remMpileup_$(PAT).log
 
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
-transfer_input_files = $(PAT)_Q20_q20.mpileup
+transfer_input_files = $(PAT)_Q20_q20.mpileup, $(TRANS3)
 
 request_cpus = 1
 request_memory = 2GB
