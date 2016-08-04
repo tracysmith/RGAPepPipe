@@ -12,6 +12,7 @@ VARS mpileup TRANS2="${trans2}"
 
 JOB remMpileup remMpileup.submit
 VARS remMpileup PAT="${pat}"
+VARS remMpileup INDELS="${indels}"
 VARS remMpileup TRANS3="${trans3}"
 
 JOB sync sync.submit
