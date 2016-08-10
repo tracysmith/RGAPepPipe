@@ -1,0 +1,17 @@
+universe = vanilla
+executable = fastqc_check.sh
+arguments = "$(RUN)"
+
+output = fastqc_check_$(RUN).out
+error = fastqc_check_$(RUN).err
+log = fastqc_check_$(RUN).log
+
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+transfer_input_files = $(RUN)_1_val_1_fastqc.zip,$(RUN)_2_val_2_fastqc.zip,fastqc_check.py
+
+request_cpus = 8
+request_memory = 2GB
+request_disk = 2GB
+
+queue

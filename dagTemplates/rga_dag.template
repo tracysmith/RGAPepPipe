@@ -9,6 +9,10 @@ JOB trim trim.submit
 VARS trim RUN="${run}"
 SCRIPT POST trim check2Outputs.sh ${run}_1_val_1.fq ${run}_2_val_2.fq 10M
 
+JOB fastqc_check fastqc_check.submit
+VARS fastqc_check RUN="${run}"
+SCRIPT POST fastqc_check fastqc_postcheck.sh ${run}_failedFastqc.txt 10M
+
 JOB bwa bwaMEM.submit
 VARS bwa RUN="${run}"
 VARS bwa REF="${ref}"
@@ -52,7 +56,8 @@ VARS fasta RUN="${run}"
 SCRIPT POST fasta checkOutput_removeIntermediates.sh ${sample}_${run}_RGA.fasta 1M ${run}.vcf ${run}.vcf.idx
 
 PARENT fastq_dump CHILD fastqc trim
-PARENT trim CHILD bwa
+PARENT trim CHILD fastqc_check
+PARENT fastqc_check CHILD bwa
 PARENT bwa CHILD view
 PARENT view CHILD sort
 PARENT sort CHILD picard
