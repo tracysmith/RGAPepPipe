@@ -47,6 +47,8 @@ for pat in patDict:
         inputMpileupList = []
         realnTransferList = []
         mpileupTransferList = []
+        indelsGtfList = []
+        indelsGtfTransferList = []
         for i in idList:
             inputRealnList.append('-I {0}.realn.bam'.format(i))
             inputMpileupList.append('{0}.realn.patrealn.bam'.format(i))
@@ -54,6 +56,8 @@ for pat in patDict:
             realnTransferList.append('{0}.realn.bai'.format(i))
             mpileupTransferList.append('{0}.realn.patrealn.bam'.format(i))
             mpileupTransferList.append('{0}.realn.patrealn.bai'.format(i))
+            indelsGtfList.append('{0}_remIndels'.format(i))
+            indelsGtfTransferList.append('{0}.indelreg.gtf'.format(i))
         variableMap = {}
         variableMap['ref'] = args.reference
         variableMap['pat'] = pat
@@ -61,6 +65,8 @@ for pat in patDict:
         variableMap['trans1'] = ",".join(realnTransferList)
         variableMap['inputs2'] = " ".join(inputMpileupList)
         variableMap['trans2'] = ",".join(mpileupTransferList)
+        variableMap['trans3'] = ",".join(indelsGtfTransferList)
+        variableMap['indels'] = " ".join(indelsGtfList)
         print("Writing patient aware dag to {0}_pooled.dag".format(pat))
         with open("{0}_pooled.dag".format(variableMap['pat']), 'w') as dagfile:
             with open(args.dagtemplates + "patient_dag.template", 'r') as template_file:
@@ -74,6 +80,7 @@ for pat in patDict:
                     template = Template(template_file.read())
                     out = template.substitute(variableMap)
                     dagfile.write(out)
+            dagfile.write("parent mpileup {0} child remMpileup".format(" ".join(indelsGtfList)))
     else:
         print("There is {0} samples for patient {1}".format(len(patDict[pat]), pat))
         run = patDict[pat][0]
