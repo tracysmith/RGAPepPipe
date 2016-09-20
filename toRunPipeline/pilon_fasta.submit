@@ -1,0 +1,17 @@
+universe = vanilla
+executable = pilonVCFtoFasta.py
+arguments = "$(RUN)_filter.vcf"
+
+output = pilonVCFtoFasta.out
+error = pilonVCFtoFasta.err
+log = pilonVCFtoFasta.log
+
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+transfer_input_files = $(RUN)_filter.vcf
+
+request_cpus = 1
+request_memory = 1GB
+request_disk = 1GB
+
+queue
