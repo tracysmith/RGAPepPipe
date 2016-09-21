@@ -34,10 +34,10 @@ VARS gatk RUN="${run}"
 VARS gatk REF="${ref}"
 SCRIPT POST gatk checkOutput_removeIntermediates.sh ${run}.realn.bam 10M ${run}.sort.bam
 
-JOB vcf_pilon pilon_vcf.submit
-VARS vcf_pilon RUN="${run}"
-VARS vcf_pilon REF="${ref}"
-SCRIPT POST vcf_pilon checkOutput_removeIntermediates.sh ${run}.vcf 10M ${run}.dedup.bam
+JOB pilon_vcf pilon_vcf.submit
+VARS pilon_vcf RUN="${run}"
+VARS pilon_vcf REF="${ref}"
+SCRIPT POST pilon_vcf checkOutput_removeIntermediates.sh ${run}.vcf 10M ${run}.dedup.bam
 
 JOB bamqc bamqc.submit
 VARS bamqc RUN="${run}"
@@ -57,5 +57,5 @@ PARENT view CHILD sort
 PARENT sort CHILD picard
 PARENT picard CHILD gatk
 PARENT gatk CHILD vcf_pilon
-PARENT vcf_pilon CHILD filter bamqc
+PARENT pilon_vcf CHILD filter bamqc
 PARENT filter CHILD pilon_fasta
