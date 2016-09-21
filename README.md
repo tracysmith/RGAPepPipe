@@ -41,7 +41,12 @@ Picard-tools
 GATK (genome analysis toolkit)
   * available from broad institute
   * we use version 3.4.46
-  * locally realigns reads and produces VCF  
+  * locally realigns reads and produces VCF
+
+Pilon
+  * available from broad institute (https://github.com/broadinstitute/pilon)
+  * we use version 1.16 
+  * Produces VCF 
 
 Qualimap
 * available from http://qualimap.bioinfo.cipf.es/
