@@ -34,21 +34,17 @@ VARS gatk RUN="${run}"
 VARS gatk REF="${ref}"
 SCRIPT POST gatk checkOutput_removeIntermediates.sh ${run}.realn.bam 10M ${run}.sort.bam
 
-JOB pilon_vcf pilon_vcf.submit
-VARS pilon_vcf RUN="${run}"
-VARS pilon_vcf REF="${ref}"
-SCRIPT POST pilon_vcf checkOutput_removeIntermediates.sh ${run}.vcf 10M ${run}.dedup.bam
+JOB vcf_pilon vcf_pilon.submit
+VARS vcf_pilon RUN="${run}"
+VARS vcf_pilon REF="${ref}"
+SCRIPT POST vcf_pilon checkOutput_removeIntermediates.sh ${run}.vcf 10M ${run}.dedup.bam ${run}.fasta
 
 JOB bamqc bamqc.submit
 VARS bamqc RUN="${run}"
 
-JOB filter filter.submit
-VARS filter RUN="${run}"
-VARS filter REF="${ref}"
-SCRIPT POST filter checkOutput_removeIntermediates.sh ${run}_filter.vcf 10M ${run}.ready.bam ${run}.ready.bai
-
-JOB pilon_fasta pilon_fasta.submit
-VARS pilon_fasta RUN="${run}"
+JOB fasta_pilon pilon_fasta.submit
+VARS fasta_pilon RUN="${run}"
+SCRIPT POST fasta_pilon checkOutput_removeIntermediates.sh ${run}_RGA_pilon.fasta 1M ${run}.vcf
 
 PARENT trim CHILD fastqc_check
 PARENT fastqc_check CHILD bwa
@@ -56,6 +52,5 @@ PARENT bwa CHILD view
 PARENT view CHILD sort
 PARENT sort CHILD picard
 PARENT picard CHILD gatk
-PARENT gatk CHILD pilon_vcf
-PARENT pilon_vcf CHILD filter bamqc
-PARENT filter CHILD pilon_fasta
+PARENT gatk CHILD vcf_pilon
+PARENT vcf_pilon CHILD bamqc fasta_pilon
