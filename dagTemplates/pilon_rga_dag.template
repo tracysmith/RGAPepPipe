@@ -37,14 +37,13 @@ SCRIPT POST gatk checkOutput_removeIntermediates.sh ${run}.realn.bam 10M ${run}.
 JOB vcf_pilon vcf_pilon.submit
 VARS vcf_pilon RUN="${run}"
 VARS vcf_pilon REF="${ref}"
-SCRIPT POST vcf_pilon checkOutput_removeIntermediates.sh ${run}.vcf 10M ${run}.dedup.bam ${run}.fasta
+SCRIPT POST vcf_pilon checkOutput_removeIntermediates.sh ${run}_pilon.vcf 10M ${run}.dedup.bam ${run}_pilon.fasta
 
 JOB bamqc bamqc.submit
 VARS bamqc RUN="${run}"
 
 JOB fasta_pilon pilon_fasta.submit
 VARS fasta_pilon RUN="${run}"
-SCRIPT POST fasta_pilon checkOutput_removeIntermediates.sh ${run}_RGA_pilon.fasta 1M ${run}.vcf
 
 PARENT trim CHILD fastqc_check
 PARENT fastqc_check CHILD bwa
