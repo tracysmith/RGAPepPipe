@@ -1,6 +1,6 @@
 universe = vanilla
 executable = pilonVCFtoFasta.py
-arguments = "$(RUN).vcf"
+arguments = "$(RUN)_pilon.vcf"
 
 output = pilonVCFtoFasta.out
 error = pilonVCFtoFasta.err
@@ -8,7 +8,7 @@ log = pilonVCFtoFasta.log
 
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
-transfer_input_files = $(RUN).vcf
+transfer_input_files = $(RUN)_pilon.vcf
 
 request_cpus = 1
 request_memory = 1GB
