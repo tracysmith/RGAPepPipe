@@ -1,10 +1,10 @@
 universe = vanilla
-executable = pilon_vcf.sh
+executable = vcf_pilon.sh
 arguments = "$(RUN) $(REF)"
 
-output = pilon_$(RUN).out
-error = pilon_$(RUN).err
-log = pilon_$(RUN).log
+output = $(RUN)_pilon.out
+error = $(RUN)_pilon.err
+log = $(RUN)_pilon.log
 
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
