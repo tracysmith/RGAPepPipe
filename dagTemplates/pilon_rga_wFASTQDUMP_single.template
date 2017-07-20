@@ -1,0 +1,60 @@
+JOB fastq_dump fastq_dump.submit
+VARS fastq_dump RUN="${run}"
+SCRIPT POST fastq_dump check2Outputs.sh ${run}_1.fastq 10M
+
+JOB fastqc fastqc_single.submit
+VARS fastqc RUN="${run}"
+
+JOB trim trim_single.submit
+VARS trim RUN="${run}"
+SCRIPT POST trim check2Outputs.sh ${run}_1_trimmed.fq 10M
+
+JOB fastqc_check fastqc_check.submit
+VARS fastqc_check RUN="${run}"
+SCRIPT POST fastqc_check fastqc_postcheck.sh ${run}_failedFastqc.txt 10M
+
+JOB bwa bwaMEM_single.submit
+VARS bwa RUN="${run}"
+VARS bwa REF="${ref}"
+SCRIPT POST bwa checkOutput_removeIntermediates.sh ${run}.sam 10M ${run}_1.fastq
+
+JOB view samtools_view.submit
+VARS view RUN="${run}"
+SCRIPT POST view checkOutput_removeIntermediates.sh ${run}.bam 10M ${run}_1_trimmed.fq
+
+JOB sort samtools_sort.submit
+VARS sort RUN="${run}"
+SCRIPT POST sort checkOutput_removeIntermediates.sh ${run}.sort.bam 10M ${run}.sam
+
+JOB picard picard.submit
+VARS picard RUN="${run}"
+VARS picard LIBRARY="${lib}"
+VARS picard PLATFORM="${platform}"
+VARS picard SAMPLE="${sample}"
+SCRIPT POST picard checkOutput_removeIntermediates.sh ${run}.ready.bam 10M ${run}.bam
+
+JOB gatk gatk.submit
+VARS gatk RUN="${run}"
+VARS gatk REF="${ref}"
+SCRIPT POST gatk checkOutput_removeIntermediates.sh ${run}.realn.bam 10M ${run}.sort.bam
+
+JOB vcf_pilon vcf_pilon.submit
+VARS vcf_pilon RUN="${run}"
+VARS vcf_pilon REF="${ref}"
+SCRIPT POST vcf_pilon checkOutput_removeIntermediates.sh ${run}_pilon.vcf 10M ${run}.dedup.bam ${run}_pilon.fasta
+
+JOB bamqc bamqc.submit
+VARS bamqc RUN="${run}"
+
+JOB fasta_pilon pilon_fasta.submit
+VARS fasta_pilon RUN="${run}"
+
+PARENT fastq_dump CHILD fastqc trim
+PARENT trim CHILD fastqc_check
+PARENT fastqc_check CHILD bwa
+PARENT bwa CHILD view
+PARENT view CHILD sort
+PARENT sort CHILD picard
+PARENT picard CHILD gatk
+PARENT gatk CHILD vcf_pilon
+PARENT vcf_pilon CHILD bamqc fasta_pilon
