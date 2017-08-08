@@ -45,6 +45,7 @@ VARS bamqc RUN="${run}"
 JOB fasta_pilon pilon_fasta.submit
 VARS fasta_pilon RUN="${run}"
 
+PARENT fastqc CHILD trim
 PARENT trim CHILD fastqc_check
 PARENT fastqc_check CHILD bwa
 PARENT bwa CHILD view
